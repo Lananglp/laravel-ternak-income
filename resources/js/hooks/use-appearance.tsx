@@ -59,7 +59,8 @@ export function useAppearance() {
         // Store in cookie for SSR...
         setCookie('appearance', mode);
 
-        applyTheme(mode);
+        // applyTheme(mode);
+        applyTheme('dark');
     }, []);
 
     useEffect(() => {

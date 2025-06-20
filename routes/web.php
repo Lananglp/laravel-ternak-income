@@ -17,3 +17,4 @@ require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
 require __DIR__.'/account.php';
 require __DIR__.'/role.php';
+require __DIR__.'/module.php';
