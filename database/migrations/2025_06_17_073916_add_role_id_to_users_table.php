@@ -12,13 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('avatar')->nullable();
-            $table->string('bio')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('url')->nullable();
-            $table->string('provider')->default('none'); // 'none', 'google', 'facebook', etc.
-            $table->string('username')->unique();
-            $table->timestamp('username_changed_at')->nullable();
+            $table->foreignId('role_id')->nullable()->constrained()->nullOnDelete();
         });
     }
 

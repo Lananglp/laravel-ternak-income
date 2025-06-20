@@ -39,14 +39,20 @@ export interface User {
     avatar?: string;
     email_verified_at: string | null;
     provider: 'none' | 'google';
-    role: 'USER' | 'ADMIN';
     bio: string | null;
-    phone_1: string | null;
-    phone_2: string | null;
-    url_1: string | null;
-    url_2: string | null;
+    phone: string | null;
+    url: string | null;
     username_changed_at: string | null;
+    role: Role | null;
     created_at: string;
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
+}
+
+export interface Role {
+    id: number;
+    name: string;
+    slug: string;
+    created_at: string;
+    updated_at: string;
 }

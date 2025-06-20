@@ -23,15 +23,13 @@ class User extends Authenticatable
         'email',
         'avatar',
         'provider', // 'none', 'google', etc.
-        'role', // 'USER', 'ADMIN', etc.
         'email_verified_at',
         'bio',
-        'phone_1',
-        'phone_2',
-        'url_1',
-        'url_2',
+        'phone',
+        'url',
         'username_changed_at',
         'password',
+        'role_id',
     ];
 
     /**
@@ -56,4 +54,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
 }

@@ -98,10 +98,8 @@ class ProfileController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'bio' => $validated['bio'] ?? null,
-            'phone_1' => $validated['phone_1'] ?? null,
-            'phone_2' => $validated['phone_2'] ?? null,
-            'url_1' => $validated['url_1'] ?? null,
-            'url_2' => $validated['url_2'] ?? null,
+            'phone' => $validated['phone'] ?? null,
+            'url' => $validated['url'] ?? null,
         ]);
 
         $user->save();

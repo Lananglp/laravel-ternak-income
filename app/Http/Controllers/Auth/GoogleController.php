@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
+use App\Models\Role;
 
 class GoogleController extends Controller
 {
@@ -19,6 +20,9 @@ class GoogleController extends Controller
     {
         $googleUser = Socialite::driver('google')->stateless()->user();
 
+        // Cari role 'user'
+        $role = Role::where('slug', 'user')->firstOrFail();
+
         $user = User::firstOrCreate(
             ['email' => $googleUser->getEmail()],
             [
@@ -26,8 +30,8 @@ class GoogleController extends Controller
                 'username' => $this->generateUsername($googleUser->getName()),
                 'avatar' => $googleUser->getAvatar(),
                 'provider' => 'google',
-                'role' => 'USER',
                 'email_verified_at' => now(),
+                'role_id' => $role->id,
             ]
         );
 

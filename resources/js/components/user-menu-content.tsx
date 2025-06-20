@@ -4,17 +4,23 @@ import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { type User } from '@/types';
 import { Link, router } from '@inertiajs/react';
 import { LogOut, Settings } from 'lucide-react';
+import { useLogoutDialogStore } from '@/stores/use-logout-dialog-store';
 
 interface UserMenuContentProps {
     user: User;
+    onClose?: () => void;
 }
 
-export function UserMenuContent({ user }: UserMenuContentProps) {
+export function UserMenuContent({ user, onClose }: UserMenuContentProps) {
     const cleanup = useMobileNavigation();
+    const { setOpen } = useLogoutDialogStore();
 
     const handleLogout = () => {
         cleanup();
-        router.flushAll();
+        setOpen(true);
+        onClose?.();
+        // router.post(route('logout'));
+        // router.flushAll();
     };
 
     return (
@@ -34,11 +40,9 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
                 </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-                <Link className="block w-full" method="post" href={route('logout')} as="button" onClick={handleLogout}>
-                    <LogOut className="mr-2" />
-                    Log out
-                </Link>
+            <DropdownMenuItem onClick={handleLogout}>
+                <LogOut className="size-4 mr-2" />
+                Log out
             </DropdownMenuItem>
         </>
     );

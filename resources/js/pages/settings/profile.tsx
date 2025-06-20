@@ -29,10 +29,8 @@ type ProfileForm = {
     email: string;
     avatar: File | undefined;
     bio: string | null;
-    phone_1: string | null;
-    phone_2: string | null;
-    url_1: string | null;
-    url_2: string | null;
+    phone: string | null;
+    url: string | null;
 }
 
 export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: boolean; status?: string }) {
@@ -47,10 +45,8 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
         email: auth.user.email,
         avatar: undefined,
         bio: auth.user.bio || null,
-        phone_1: auth.user.phone_1 || null,
-        phone_2: auth.user.phone_2 || null,
-        url_1: auth.user.url_1 || null,
-        url_2: auth.user.url_2 || null,
+        phone: auth.user.phone || null,
+        url: auth.user.url || null,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -221,59 +217,31 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                         )}
 
                         <div className="grid gap-2">
-                            <Label htmlFor="phone_1">Phone Number 1</Label>
+                            <Label htmlFor="phone">Phone Number</Label>
 
                             <Input
-                                id="phone_1"
+                                id="phone"
                                 type="tel"
-                                value={data.phone_1 || ""}
-                                onChange={(e) => setData('phone_1', e.target.value)}
+                                value={data.phone || ""}
+                                onChange={(e) => setData('phone', e.target.value)}
                                 placeholder="+62**"
                             />
 
-                            <InputError className="mt-2" message={errors.phone_1} />
+                            <InputError className="mt-2" message={errors.phone} />
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="phone_2">Phone Number 2</Label>
+                            <Label htmlFor="url">Website URL</Label>
 
                             <Input
-                                id="phone_2"
-                                type="tel"
-                                value={data.phone_2 || ""}
-                                onChange={(e) => setData('phone_2', e.target.value)}
-                                placeholder="+62**"
-                            />
-
-                            <InputError className="mt-2" message={errors.phone_2} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="url_1">Website URL 1</Label>
-
-                            <Input
-                                id="url_1"
+                                id="url"
                                 type="url"
-                                value={data.url_1 || ""}
-                                onChange={(e) => setData('url_1', e.target.value)}
+                                value={data.url || ""}
+                                onChange={(e) => setData('url', e.target.value)}
                                 placeholder="https://yourwebsite.com"
                             />
 
-                            <InputError className="mt-2" message={errors.url_1} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="url_2">Website URL 2</Label>
-
-                            <Input
-                                id="url_2"
-                                type="url"
-                                value={data.url_2 || ""}
-                                onChange={(e) => setData('url_2', e.target.value)}
-                                placeholder="https://yourwebsite.com"
-                            />
-
-                            <InputError className="mt-2" message={errors.url_2} />
+                            <InputError className="mt-2" message={errors.url} />
                         </div>
 
                         <div className="flex items-center gap-4">

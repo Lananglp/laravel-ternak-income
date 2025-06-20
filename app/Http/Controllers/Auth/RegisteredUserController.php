@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Role;
 
 class RegisteredUserController extends Controller
 {
@@ -40,12 +41,16 @@ class RegisteredUserController extends Controller
         // Buat username dari nama
         $username = $this->generateUsername($request->name);
 
+        // Cari role 'user'
+        $role = Role::where('slug', 'user')->firstOrFail();
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'username' => $username,
             'password' => Hash::make($request->password),
             'provider' => 'none', // karena register manual
+            'role_id' => $role->id,
             // Field lain biarkan null (bio, avatar, phone, url, etc.)
         ]);
 

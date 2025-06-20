@@ -39,10 +39,8 @@ class ProfileUpdateRequest extends FormRequest
             // 'avatar' => ['nullable', 'url'],
             'avatar' => ['nullable', 'image', 'max:2048'], // max 2MB
             'bio' => ['nullable', 'string', 'max:1000'],
-            'phone_1' => ['nullable', 'string', 'max:20'],
-            'phone_2' => ['nullable', 'string', 'max:20'],
-            'url_1' => ['nullable', 'url', 'max:255'],
-            'url_2' => ['nullable', 'url', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'url' => ['nullable', 'url', 'max:255'],
         ];
     }
 }
