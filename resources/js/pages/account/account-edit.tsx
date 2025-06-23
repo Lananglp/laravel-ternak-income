@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { User } from "@/types";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import { LoaderCircle, PenLineIcon, PlusIcon, UserRoundPenIcon } from "lucide-react";
 import { FormEventHandler, useEffect, useState } from "react";
 
@@ -37,6 +37,10 @@ export const AccountEdit = ({ user }: { user: User }) => {
             preserveScroll: true,
             onSuccess: () => {
                 handleClose();
+                router.get(route('account.index'), {}, {
+                    preserveScroll: true,
+                    only: ['accounts']
+                });
             }
         });
     };

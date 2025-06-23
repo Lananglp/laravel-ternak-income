@@ -2,16 +2,17 @@ import AppLogoIcon from '@/components/app-logo-icon';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SparklesCore } from '@/components/ui/sparkles';
-import { type SharedData } from '@/types';
+import { formatRupiah } from '@/helper/helper';
+import { Membership, type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { CameraIcon, ChartLineIcon, CheckIcon, CrownIcon, SparklesIcon, UsersRoundIcon, XIcon } from 'lucide-react';
 
 interface CardPricingProps {
     label: string;
-    price: string;
+    price: number;
     priceDuration: string;
-    description: string;
-    features: {
+    description?: string;
+    features?: {
         type: "check" | "disabled";
         label: string;
     }[];
@@ -24,13 +25,13 @@ const CardPricing = ({ label, price, priceDuration, description, features }: Car
                 <div className='grow space-y-4'>
                     <h5 className="mb-4 text-xl font-medium text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">{label}</h5>
                     <div className="flex items-baseline text-neutral-900 dark:text-white">
-                        <span className="text-3xl font-semibold">Rp.</span>
-                        <span className="text-4xl font-semibold tracking-tight ">{price}</span>
+                        {/* <span className="text-3xl font-semibold">Rp.</span> */}
+                        <span className="text-4xl font-semibold tracking-tight ">{formatRupiah(price)}</span>
                         <span className="ms-1 text-xl font-normal text-neutral-500 dark:text-neutral-400">/ {priceDuration}</span>
                     </div>
-                    <p className='text-lg text-neutral-300'>{description}</p>
+                    {description && <p className='text-lg text-neutral-300'>{description}</p>}
                     <ul role="list" className="space-y-5 my-7">
-                        {features.map((feature, index) => (
+                        {features && features.map((feature, index) => (
                             <li key={index} className="flex items-center">
                                 <div className={`flex justify-center items-center w-4 h-4 shrink-0 rounded-full text-white ${feature.type === 'check' ? 'bg-blue-700' : 'bg-red-700'}`}>
                                     {feature.type === 'check' ? (
@@ -54,7 +55,7 @@ const CardPricing = ({ label, price, priceDuration, description, features }: Car
     )
 }
 
-export default function Welcome() {
+export default function Welcome({ memberships }: { memberships: Membership[] }) {
     const { auth } = usePage<SharedData>().props;
     const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -455,7 +456,17 @@ export default function Welcome() {
 
                     <section className='py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6'>
                         <div className='grid grid-cols-3 gap-4'>
-                            <CardPricing
+                            {memberships.map((membership) => (
+                                <CardPricing
+                                    key={membership.id}
+                                    label={membership.name}
+                                    price={membership.price}
+                                    description={membership.tagline || ''}
+                                    priceDuration={membership.duration_days ? `${membership.duration_days} hari` : 'Selamanya'}
+                                    features={membership.benefits?.map(benefit => ({ type: benefit.is_active ? 'check' : 'disabled', label: benefit.benefit })) || []}
+                                />
+                            ))}
+                            {/* <CardPricing
                                 label='Starter Plan'
                                 price='299.000'
                                 description='Cocok untuk kamu yang baru pertama mencoba.'
@@ -508,7 +519,7 @@ export default function Welcome() {
                                     { type: "check", label: "Bonus contoh promosi email yang menghasilkan 1 juta dalam 2 hari (study nyata)" },
                                     { type: "check", label: "Akses seumur hidup ke grup komunitas ternak income" }
                                 ]}
-                            />
+                            /> */}
                         </div>
                     </section>
 

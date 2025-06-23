@@ -237,14 +237,21 @@ function Sidebar({
         )}
         {...props}
       >
-        <div data-sidebar="sidebar" className='bg-gradient-to-br from-orange-500 to-transparent to-50% rounded-xl ps-[1px] pt-[1px] flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm'>
+        <div
+          // className="bg-sidebar group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm"
+          className="group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm"
+        >
+          {children}
+        </div>
+
+        {/* <div data-sidebar="sidebar" className='bg-gradient-to-br from-cyan-500 to-transparent to-50% flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm'>
           <div  
             // className="bg-sidebar group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm"
-            className="h-full flex flex-col dark:bg-neutral-950/90 group-data-[variant=floating]:border-sidebar-border rounded-lg"
+            className="h-full flex flex-col dark:bg-neutral-950/80 group-data-[variant=floating]:border-sidebar-border"
           >
             {children}
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   )

@@ -28,6 +28,12 @@ export interface SharedData {
     auth: Auth;
     ziggy: Config & { location: string };
     sidebarOpen: boolean;
+    flash: {
+        success?: string;
+        error?: string;
+        status?: string;
+        snap_token?: string;
+    }
     [key: string]: unknown;
 }
 
@@ -44,6 +50,9 @@ export interface User {
     url: string | null;
     username_changed_at: string | null;
     role: Role | null;
+    membership_id: number | null;
+    membership_started_at: string | null;
+    membership_expires_at: string | null;
     created_at: string;
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
@@ -56,3 +65,23 @@ export interface Role {
     created_at: string;
     updated_at: string;
 }
+
+export interface Membership {
+    id: number;
+    name: string;
+    price: number;
+    duration_days: number | null;
+    tagline?: string | null;
+    position: number;
+    benefits?: MembershipBenefit[];
+    // created_at: string;
+    // updated_at: string;
+}
+
+export interface MembershipBenefit {
+  id: number;
+  membership_id: number;
+  benefit: string;
+  is_active: boolean;
+  position: number;
+};

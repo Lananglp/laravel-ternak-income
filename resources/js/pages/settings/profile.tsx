@@ -1,6 +1,6 @@
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Transition } from '@headlessui/react';
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { ChangeEvent, FormEventHandler, useRef, useState } from 'react';
 
 import DeleteUser from '@/components/delete-user';
@@ -59,6 +59,9 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                 if (fileInputRef.current) {
                     fileInputRef.current.value = '';
                 }
+                router.reload({
+                    only: ['auth'],
+                });
             }
         });
     };

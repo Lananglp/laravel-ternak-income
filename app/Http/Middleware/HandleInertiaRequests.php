@@ -61,6 +61,7 @@ class HandleInertiaRequests extends Middleware
                 'status' => fn () => $request->session()->get('status'),
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),
+                'snap_token' => fn () => $request->session()->get('snap_token'),
             ],
         ];
     }

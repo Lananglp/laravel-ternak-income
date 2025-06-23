@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Role } from "@/types";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import { LoaderCircle, PenIcon, PlusIcon } from "lucide-react";
 import { FormEventHandler, useState } from "react";
 
@@ -34,6 +34,10 @@ export const RoleEdit = ({ role }: { role: Role }) => {
             preserveScroll: true,
             onSuccess: () => {
                 handleClose();
+                router.get(route('role.index'), {}, {
+                    preserveScroll: true,
+                    only: ['roles']
+                });
             }
         });
     };

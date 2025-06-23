@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { User, Role } from '@/types';
 import { LoaderCircle, UserCogIcon } from 'lucide-react';
 import { useState } from 'react';
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import InputError from '@/components/input-error';
@@ -44,6 +44,10 @@ export const AssignRoleToUser = ({
             preserveScroll: true,
             onSuccess: () => {
                 handleClose();
+                router.get(route('account.index'), {}, {
+                    preserveScroll: true,
+                    only: ['accounts']
+                });
             },
         });
     };

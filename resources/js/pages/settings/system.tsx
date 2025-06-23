@@ -1,4 +1,4 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { BreadcrumbItem } from '@/types';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
@@ -41,6 +41,12 @@ export default function SystemPage({ systemConfig }: SystemPageProps) {
 
         put(route('system.update'), {
             preserveScroll: true,
+            onSuccess: () => {
+                router.get(route('system.edit'), {}, {
+                    preserveScroll: true,
+                    only: ['systemConfig']
+                });
+            }
         });
     };
 
