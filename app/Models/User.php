@@ -51,6 +51,8 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'membership_expires_at' => 'datetime',
+            'membership_started_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
@@ -58,6 +60,11 @@ class User extends Authenticatable
     public function role()
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function membership()
+    {
+        return $this->belongsTo(Membership::class);
     }
 
 }

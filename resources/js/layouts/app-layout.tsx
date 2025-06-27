@@ -6,6 +6,22 @@ import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import { SharedData, type BreadcrumbItem } from '@/types';
 import { type ReactNode } from 'react';
 
+declare global {
+    interface Window {
+        snap: {
+            pay: (
+                token: string,
+                options?: {
+                    onSuccess?: (result: any) => void;
+                    onPending?: (result: any) => void;
+                    onError?: (result: any) => void;
+                    onClose?: () => void;
+                }
+            ) => void;
+        };
+    }
+}
+
 interface AppLayoutProps {
     children: ReactNode;
     breadcrumbs?: BreadcrumbItem[];
@@ -25,15 +41,15 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
             window.snap.pay(snapToken, {
                 onSuccess: function (result) {
                     console.log('Pembayaran berhasil:', result);
-                    window.location.href = '/membership/success'; // sesuaikan jika perlu
+                    // window.location.href = '/membership/success'; // sesuaikan jika perlu
                 },
                 onPending: function (result) {
                     console.log('Pembayaran tertunda:', result);
-                    window.location.href = '/membership/pending'; // bisa juga redirect sesuai status
+                    // window.location.href = '/membership/pending'; // bisa juga redirect sesuai status
                 },
                 onError: function (result) {
                     console.error('Pembayaran gagal:', result);
-                    window.location.href = '/membership/failed';
+                    // window.location.href = '/membership/failed';
                 },
                 onClose: function () {
                     console.warn('Popup ditutup tanpa menyelesaikan pembayaran');

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Membership\MembershipController;
 use App\Models\Membership;
 
@@ -12,9 +13,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
 require __DIR__.'/settings.php';
@@ -23,3 +22,4 @@ require __DIR__.'/account.php';
 require __DIR__.'/role.php';
 require __DIR__.'/module.php';
 require __DIR__.'/membership.php';
+require __DIR__.'/transaction.php';

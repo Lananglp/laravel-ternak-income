@@ -19,6 +19,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
+        $middleware->validateCsrfTokens(except: [
+            // 'stripe/*',
+            'membership/callback',
+            // 'http://example.com/foo/*',
+            // 'https://86f4-139-5-155-41.ngrok-free.app/membership/callback',
+        ]);
 
         $middleware->web(append: [
             HandleAppearance::class,

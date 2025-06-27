@@ -18,7 +18,7 @@ class AccountController extends Controller
 {
     public function index(Request $request): Response
     {
-        $query = User::with('role')->latest();
+        $query = User::with(['role', 'membership'])->latest();
 
         if ($request->has('search') && $request->search !== null) {
             $query->where('name', 'like', '%' . $request->search . '%')

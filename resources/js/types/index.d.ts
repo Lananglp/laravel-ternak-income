@@ -51,6 +51,7 @@ export interface User {
     username_changed_at: string | null;
     role: Role | null;
     membership_id: number | null;
+    membership: Membership | null;
     membership_started_at: string | null;
     membership_expires_at: string | null;
     created_at: string;
@@ -85,3 +86,32 @@ export interface MembershipBenefit {
   is_active: boolean;
   position: number;
 };
+
+export interface Transaction {
+    id: number;
+    user_id: number;
+    user: User;
+    membership_id: number;
+    membership: Membership;
+    order_id: number;
+    payment_type: string | null;
+    transaction_status: string | null;
+    transaction_id: string | null;
+    fraud_status: string | null;
+    response: json | null;
+    paid_at: string | null;
+    created_at: string | null;
+    updated_at: string | null;
+}
+
+export interface Module {
+    id: number;
+    title: string;
+    slug: string;
+    description: string;
+    thumbnail: string;
+    position: number;
+    videos_count: number;
+    created_at: string | null;
+    updated_at: string | null;
+}

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Membership;
 use App\Models\User;
+use App\Models\Transaction;
 use App\Http\Requests\Memberships\StoreMembershipRequest;
 use App\Http\Requests\Memberships\UpdateMembershipRequest;
 use Illuminate\Http\RedirectResponse;
@@ -105,15 +106,18 @@ class MembershipController extends Controller
         $user = auth()->user();
         $membership = Membership::findOrFail($id);
 
-        // Konfigurasi Midtrans
-        Config::$serverKey = config('midtrans.server_key');
-        Config::$isProduction = config('midtrans.is_production', false);
-        Config::$isSanitized = true;
-        Config::$is3ds = true;
+        if (
+            $user->membership_id &&
+            $user->membership_expires_at &&
+            $user->membership_expires_at->isFuture()
+        ) {
+            return redirect()->back()->with('error', 'Kamu masih memiliki membership aktif hingga ' . $user->membership_expires_at->translatedFormat('d F Y H:i') . '.');
+        }
 
-        $orderId = 'ORD-' . $user->id . '-' . $membership->id . '-' . Str::uuid();
+        // $orderId = 'ORDER-' . strtoupper(Str::random(10));
+        $orderId = 'ORDER-' . now()->format('YmdHis') . '-' . strtoupper(Str::random(10));
 
-        $params = [
+        $payload = [
             'transaction_details' => [
                 'order_id' => $orderId,
                 'gross_amount' => $membership->price,
@@ -128,65 +132,78 @@ class MembershipController extends Controller
                     'price' => $membership->price,
                     'quantity' => 1,
                     'name' => $membership->name,
-                ],
+                ]
             ],
+            'custom_field1' => $user->id,
+            'custom_field2' => $membership->id
         ];
 
-        $snapToken = Snap::getSnapToken($params);
-        // dd($snapToken);
-        return redirect()->back()->with('snap_token', $snapToken);
+        $snapToken = Snap::getSnapToken($payload);
 
-        // try {
-        //     $snapToken = Snap::getSnapToken($params);
-
-        //     return redirect()->back()->with('snap_token', $snapToken);
-        // } catch (\Exception $e) {
-        //     return redirect()->back()->withErrors(['midtrans' => 'Gagal membuat token pembayaran: ' . $e->getMessage()]);
-        // }
+        // Kirim token ke frontend, simpan order_id di session jika perlu
+        return redirect()->back()->with([
+            'snap_token' => $snapToken,
+            'order_id' => $orderId,
+        ]);
     }
 
     public function callback(Request $request)
     {
-        // Set Midtrans Config
-        Config::$serverKey = config('midtrans.server_key');
-        Config::$isProduction = config('midtrans.is_production');
-        Config::$isSanitized = config('midtrans.is_sanitized');
-        Config::$is3ds = config('midtrans.is_3ds');
+        $notif = new Notification();
 
-        // Tangkap notifikasi
-        $notification = new Notification();
+        // Ambil order_id dari notifikasi
+        $orderId = $notif->order_id;
 
-        $transactionStatus = $notification->transaction_status;
-        $paymentType = $notification->payment_type;
-        $orderId = $notification->order_id;
-        $fraudStatus = $notification->fraud_status;
+        // Cek apakah transaksi sudah ada
+        $transaction = Transaction::where('order_id', $orderId)->first();
+        $userId = $notif->custom_field1 ?? null;
+        $membershipId = $notif->custom_field2 ?? null;
 
-        // Kamu bisa parse order_id, misalnya bentuknya "ORDER-uuid-USERID-MEMBERID"
-        // atau kamu bisa simpan order_id dan mapping-nya ke tabel transaksi
-        // Contoh ini hanya menunjukkan cara menyimpan membership
+        if (!$transaction) {
+            // ❗️Jika belum ada, maka buat baru di sini
+            // Pastikan ada cara untuk mendapatkan user & membership (misalnya dari email atau custom metadata)
+            $user = User::find($userId);
+            $membership = Membership::find($membershipId);
 
-        if ($transactionStatus === 'capture' || $transactionStatus === 'settlement') {
-            // Ambil user_id dan membership_id dari metadata (kalau kamu kirim sebelumnya)
-            $userId = $notification->metadata->user_id ?? null;
-            $membershipId = $notification->metadata->membership_id ?? null;
-
-            if ($userId && $membershipId) {
-                $user = User::find($userId);
-                $membership = Membership::find($membershipId);
-
-                if ($user && $membership) {
-                    $user->membership_id = $membership->id;
-                    if ($membership->duration_days) {
-                        $user->membership_expires_at = now()->addDays($membership->duration_days);
-                    } else {
-                        $user->membership_expires_at = null; // Lifetime
-                    }
-                    $user->save();
-                }
+            if (!$user || !$membership) {
+                return response()->json(['message' => 'User or membership not found'], 404);
             }
+
+            $transaction = Transaction::create([
+                'user_id' => $user->id,
+                'membership_id' => $membership->id,
+                'order_id' => $orderId,
+                'transaction_id' => $notif->transaction_id,
+                'payment_type' => $notif->payment_type,
+                'transaction_status' => $notif->transaction_status,
+                'fraud_status' => $notif->fraud_status,
+                'response' => file_get_contents('php://input'),
+                'paid_at' => in_array($notif->transaction_status, ['settlement', 'capture']) ? now() : null,
+            ]);
+        } else {
+            // Jika sudah ada, update data-nya
+            $transaction->update([
+                'payment_type' => $notif->payment_type,
+                'transaction_status' => $notif->transaction_status,
+                'fraud_status' => $notif->fraud_status,
+                'transaction_id' => $notif->transaction_id,
+                'response' => file_get_contents('php://input'),
+                'paid_at' => in_array($notif->transaction_status, ['settlement', 'capture']) ? now() : null,
+            ]);
         }
 
-        return back()->with('success', 'Pembayaran berhasil.');
-    }
+        // Jika pembayaran sukses, aktifkan membership ke user
+        if (in_array($notif->transaction_status, ['settlement', 'capture'])) {
+            $duration = $transaction->membership->duration_days ?? null;
+            $user = $transaction->user;
 
+            $user->update([
+                'membership_id' => $transaction->membership_id,
+                'membership_started_at' => now(),
+                'membership_expires_at' => $duration ? now()->addDays($duration) : null,
+            ]);
+        }
+
+        return response()->json(['message' => 'Callback processed'], 200);
+    }
 }

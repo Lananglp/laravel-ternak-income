@@ -14,4 +14,9 @@ class Membership extends Model
         return $this->hasMany(MembershipBenefit::class)->orderBy('position');
     }
 
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
 }

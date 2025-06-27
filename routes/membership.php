@@ -3,10 +3,12 @@
 use App\Http\Controllers\Membership\MembershipController;
 use App\Http\Controllers\Membership\BenefitController;
 
+Route::post('/membership/callback', [MembershipController::class, 'callback'])->name('membership.callback');
+
 Route::middleware('auth')->group(function () {
     Route::get('membership', [MembershipController::class, 'index'])->name('membership.index');
     Route::post('/membership/pay/{id}', [MembershipController::class, 'pay'])->name('membership.pay');
-    Route::post('/membership/callback', [MembershipController::class, 'callback'])->name('membership.callback');
+    // Route::post('/membership/callback', [MembershipController::class, 'callback'])->name('membership.callback');
     
     Route::middleware('role:admin')->group(function () {
         Route::post('/membership', [MembershipController::class, 'store'])->name('membership.store');

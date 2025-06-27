@@ -6,14 +6,14 @@ import { Module, type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { Vibrant } from 'node-vibrant/browser';
-import { LockIcon } from 'lucide-react';
+import { GripVertical, LockIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import Modulecreate from './module-create';
+// import Modulecreate from './module-create';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Modules',
-        href: '/modules',
+        title: 'Admin Modules',
+        href: '/admin/modules',
     },
 ];
 
@@ -109,16 +109,16 @@ const ModuleSection = ({ title, slug, description, lessons, duration, image, isA
     );
 }
 
-export default function Modules({ modules }: { modules: Module[] }) {
+export default function AdminModules({ modules }: { modules: Module[] }) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Modules" />
             <div className="px-4 py-6">
-                <Heading title="List of modules" description="Start your career with the right guidance." />
-                <Modulecreate />
-                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
-                    {modules && modules.map((module) => (
+                <Heading title="Data Modul" description="Manajemen data modul anda" />
+                {/* <Modulecreate /> */}
+                <div className='grid grid-cols-1 xl:grid-cols-2 gap-4'>
+                    {/* {modules && modules.map((module) => (
                         <ModuleSection
                             title={module.title}
                             slug={module.slug}
@@ -128,31 +128,74 @@ export default function Modules({ modules }: { modules: Module[] }) {
                             image={module.thumbnail}
                             isActive={true}
                         />
-                    ))}
-                    {/* <ModuleSection
-                        title="Module 1: Introduction to React"
-                        description="Learn the basics of React, including components, state, and props."
-                        lessons={8}
-                        duration="2h 30m"
-                        image="/ngasal/modul1.jpeg"
-                        isActive={false}
-                    />
-                    <ModuleSection
-                        title="Module 2: Advanced React Patterns"
-                        description="Dive deeper into React with hooks, context, and performance optimization."
-                        lessons={12}
-                        duration="3h 15m"
-                        image="/ngasal/modul2.jpeg"
-                        isActive={false}
-                    />
-                    <ModuleSection
-                        title="Module 3: State Management with Redux"
-                        description="Understand state management in React applications using Redux."
-                        lessons={10}
-                        duration="2h 45m"
-                        image="/ngasal/modul3.jpeg"
-                        isActive={false}
-                    /> */}
+                    ))} */}
+                    <div className={`rounded-xl`}>
+                        <div className={`bg-neutral-950 rounded-2xl`}>
+                            <div className={`bg-gradient-to-l from-orange-500/15 to-neutral-900 border border-neutral-800 rounded-xl p-4 flex flex-row items-center gap-1`}>
+                                <Button
+                                    // {...attributes}
+                                    // {...listeners}
+                                    variant={'transparent'}
+                                    size={'iconXs'}
+                                    title="Geser untuk ubah urutan"
+                                >
+                                    <GripVertical className="w-5 h-5 text-neutral-500" />
+                                </Button>
+                                <div className='w-full flex items-center gap-4'>
+                                    <div className='hidden md:block w-72 lg:w-md aspect-video bg-neutral-800 rounded-lg'>
+                                        <img src="/ngasal/modul1.jpeg" alt="" className='aspect-video object-cover rounded-lg' />
+                                    </div>
+                                    <div className='w-full text-zinc-400 space-y-1'>
+                                        <div className='text-nowrap text-orange-500 font-semibold'>19 Video</div>
+                                        <div className='text-lg lg:text-xl font-medium text-white'>Modul 1: Belajar react secara dasar</div>
+                                        <div className='text-sm line-clamp-2'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus corrupti voluptatibus, facilis totam iusto ab.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='bg-neutral-900 border-x border-b border-neutral-800 rounded-b-xl mx-3 px-4 py-3 space-y-2'>
+                            <div className='flex justify-between items-center gap-2 mb-2 border-b pb-3'>
+                                <h6 className='text-sm'>List Video Modul :</h6>
+                                <div className='flex items-center space-x-2'>
+                                    {/* <MembershipEdit membership={membership} />
+                                    <MembershipDelete membership={membership} /> */}
+                                </div>
+                            </div>
+                            {/* <MembershipBenefit membership={membership} role={role} /> */}
+
+                            <ul>
+                                <li
+                                    // ref={setNodeRef}
+                                    // style={style}
+                                    // key={benefit.id}
+                                    className={`relative group/benefit rounded-lg flex items-center gap-1 p-1 hover:bg-neutral-800`}
+                                >
+                                    <div className='flex items-center'>
+                                        <Button
+                                            // {...attributes}
+                                            // {...listeners}
+                                            variant={'transparent'}
+                                            size={'iconSm'}
+                                            title="Ubah urutan benefit"
+                                        >
+                                            <GripVertical className="w-4 h-4 text-neutral-500" />
+                                        </Button>
+                                        {/* <div
+                                            className={`flex justify-center items-center w-4 h-4 shrink-0 rounded-full text-white ${benefit.is_active ? 'bg-blue-700' : 'bg-red-700'
+                                                } mx-1`}
+                                        >
+                                            {benefit.is_active ? <CheckIcon className="shrink-0 w-3 h-3" /> : <XIcon className="shrink-0 w-3 h-3" />}
+                                        </div> */}
+                                    </div>
+                                    <p className='text-sm text-neutral-400'>Pengenalan Dasar React</p>
+                                    {/* <div className='hidden group-hover/benefit:flex items-center absolute end-3 top-1/2 -translate-y-1/2 gap-1'>
+                                        <BenefitEdit benefit={benefit} membershipId={membershipId} />
+                                        <BenefitDelete benefit={benefit} membershipId={membershipId} />
+                                    </div> */}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </AppLayout>

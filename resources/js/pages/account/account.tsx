@@ -2,7 +2,7 @@ import Heading from "@/components/heading";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { formatDateTime } from "@/helper/helper";
+import { countdownDays, formatDateTime } from "@/helper/helper";
 import { useInitials } from "@/hooks/use-initials";
 import AppLayout from "@/layouts/app-layout";
 import { BreadcrumbItem, Role, User } from "@/types";
@@ -58,10 +58,10 @@ function account({ users, roles, filters }: AccountProps) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Manage Accounts" />
+            <Head title="Manajemen Akun" />
 
             <div className="px-4 py-6">
-                <Heading title="Manage Accounts" description="Manage your account settings" />
+                <Heading title="Manajemen Akun" description="Informasi data akun, mengelola dan mengatur hak akses." />
                 <div className="flex justify-between items-center gap-4 mb-4">
                     <Accountcreate />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -105,7 +105,9 @@ function account({ users, roles, filters }: AccountProps) {
                                         <TableHead className="w-[100px]">Name</TableHead>
                                         <TableHead>Email</TableHead>
                                         <TableHead>Username</TableHead>
-                                        <TableHead>Role</TableHead>
+                                        <TableHead className="text-center">Membership</TableHead>
+                                        <TableHead className="text-center">Berakhir pada</TableHead>
+                                        <TableHead className="text-center">Role</TableHead>
                                         <TableHead className="text-center">Provider</TableHead>
                                         <TableHead>Created At</TableHead>
                                         <TableHead>Changed At</TableHead>
@@ -127,7 +129,9 @@ function account({ users, roles, filters }: AccountProps) {
                                             </TableCell>
                                             <TableCell>{user.email}</TableCell>
                                             <TableCell>{user.username}</TableCell>
-                                            <TableCell>{user.role?.name ? user.role.name : '-'}</TableCell>
+                                            <TableCell className="text-center">{user.membership?.name ? user.membership.name : '-'}</TableCell>
+                                            <TableCell className="text-center">{user.membership_expires_at ? countdownDays(user.membership_expires_at) : '-'}</TableCell>
+                                            <TableCell className="text-center">{user.role?.name ? user.role.name : '-'}</TableCell>
                                             <TableCell className={`text-center ${user.provider === 'none' ? 'text-neutral-500' : ''}`}>{user.provider}</TableCell>
                                             <TableCell className="text-neutral-500">{formatDateTime(user.created_at)}</TableCell>
                                             <TableCell className="text-neutral-500">{user.created_at !== user.updated_at ? formatDateTime(user.updated_at) : '-'}</TableCell>
