@@ -161,82 +161,6 @@ const ModuleSection = ({ role, module, title, slug, description, lessons, durati
     );
 }
 
-// const ModuleSection = ({ title, slug, description, lessons, duration, image, isActive }: { title: string; slug: string; description: string; lessons: number; duration: string; image: string, isActive: boolean }) => {
-
-//     const [bgColor, setBgColor] = useState<string | null>(null);
-//     const [textColor, setTextColor] = useState<string>('#ffffff');
-//     const [isColorReady, setIsColorReady] = useState<boolean>(false);
-
-//     useEffect(() => {
-//         Vibrant.from(image)
-//             .getPalette()
-//             .then((palette) => {
-//                 if (palette.Vibrant) {
-//                     setBgColor(palette.Vibrant.hex);
-//                     setTextColor(palette.Vibrant.titleTextColor);
-//                     setIsColorReady(true);
-//                 }
-//             })
-//             .catch((err) => {
-//                 console.error('Gagal ambil warna dari gambar:', err);
-//                 setBgColor(null);
-//                 setTextColor('#ffffff'); // Default text color if Vibrant fails
-//                 setIsColorReady(true);
-//             });
-//     }, [image]);
-
-//     if (!isColorReady) {
-//         return (
-//             <OutlineSection className='relative p-3 space-y-2'>
-//                 <Skeleton className='rounded-lg aspect-video bg-neutral-900' />
-//                 <div className='p-2 space-y-2'>
-//                     <div className='space-y-1'>
-//                         <Skeleton className='inline-block h-5 w-11/12' />
-//                         <Skeleton className='inline-block h-5 w-2/3' />
-//                     </div>
-//                     <div className='space-y-1'>
-//                         <Skeleton className='h-4 w-full' />
-//                         <Skeleton className='h-4 w-1/2' />
-//                     </div>
-//                     {/* <h3 className='text-lg font-semibold mt-2'>Loading...</h3>
-//                     <p className='text-sm text-neutral-400'>Mohon tunggu sebentar, mengambil informasi modul.</p> */}
-//                 </div>
-//                 <Skeleton className='h-8 w-full rounded-lg' />
-//             </OutlineSection>
-//         );
-//     }
-
-//     return (
-//         <OutlineSection isActive={isActive} className='relative p-3' bgColor={bgColor}>
-//             {!isActive &&
-//                 <div className='absolute z-10 inset-0 rounded-lg overflow-hidden'>
-//                     <div className='w-full h-full backdrop-blur-[4px] bg-neutral-950/50 flex justify-center items-center'>
-//                         <div className='text-center px-8'>
-//                             <LockIcon className='mb-2 inline-block h-5 w-5' />
-//                             <p className='font-semibold text-white'>Terkunci</p>
-//                             <p className='text-sm text-neutral-300'>Dapatkan akses setelah anda menjadi member aktif.</p>
-//                         </div>
-//                     </div>
-//                 </div>
-//             }
-//             <div className='aspect-video bg-neutral-900 rounded-lg'>
-//                 <img src={image} alt={title} className='rounded-lg aspect-video object-cover' />
-//             </div>
-//             <div className='p-2 space-y-2' >
-//                 <h3 className='text-lg font-semibold mt-2'>{title}</h3>
-//                 <p className='text-sm text-neutral-400'>{description}</p>
-//                 <p className="my-4 text-sm text-neutral-500 dark:text-neutral-400">
-//                     <span className='mr-2 px-3 py-1 rounded-full bg-gradient-to-r from-red-950 to-orange-950 text-white'>{lessons} Lessons</span> {duration}
-//                 </p>
-//                 <Button onClick={() => router.visit(`/modules/${slug}`)} disabled={!isActive} variant={'secondary'} size={'sm'} className='w-full'>Mulai Sekarang</Button>
-//             </div>
-//             {/* <div className='absolute -bottom-4 start-1/2 -translate-x-1/2'>
-//                 <Button variant={'outline'} size={'sm'}>Mulai Sekarang</Button>
-//             </div> */}
-//         </OutlineSection>
-//     );
-// }
-
 export default function Modules({ modules }: { modules: Module[] }) {
     const { auth } = usePage<SharedData>().props;
     const [items, setItems] = useState(modules.map((m) => m.id));
@@ -281,18 +205,6 @@ export default function Modules({ modules }: { modules: Module[] }) {
                     <Modulecreate />
                 }
                 <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4'>
-                    {/* {modules && modules.map((module) => (
-                        <ModuleSection
-                            module={module}
-                            title={module.title}
-                            slug={module.slug}
-                            description={module.description}
-                            lessons={module.videos_count}
-                            duration="2h 30m"
-                            image={`/files/${module.thumbnail}`}
-                            isActive={true}
-                        />
-                    ))} */}
                     {modules && modules.length > 0 ? (
                         <DndContext
                             sensors={sensors}
@@ -352,30 +264,6 @@ export default function Modules({ modules }: { modules: Module[] }) {
                             </div>
                         </div>
                     )}
-                    {/* <ModuleSection
-                        title="Module 1: Introduction to React"
-                        description="Learn the basics of React, including components, state, and props."
-                        lessons={8}
-                        duration="2h 30m"
-                        image="/ngasal/modul1.jpeg"
-                        isActive={false}
-                    />
-                    <ModuleSection
-                        title="Module 2: Advanced React Patterns"
-                        description="Dive deeper into React with hooks, context, and performance optimization."
-                        lessons={12}
-                        duration="3h 15m"
-                        image="/ngasal/modul2.jpeg"
-                        isActive={false}
-                    />
-                    <ModuleSection
-                        title="Module 3: State Management with Redux"
-                        description="Understand state management in React applications using Redux."
-                        lessons={10}
-                        duration="2h 45m"
-                        image="/ngasal/modul3.jpeg"
-                        isActive={false}
-                    /> */}
                 </div>
             </div>
         </AppLayout>
