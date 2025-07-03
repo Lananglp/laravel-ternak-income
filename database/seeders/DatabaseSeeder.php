@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
 
         $role = Role::where('slug', 'admin')->firstOrFail();
 
-        User::factory()->create([
+        User::create([
             'name' => 'Administrator',
             'email' => 'admin@admin.id',
             'username' => 'administrator',
@@ -32,7 +32,6 @@ class DatabaseSeeder extends Seeder
             'role_id' => $role->id,
             'provider' => 'none',
             'bio' => 'Administrator',
-
         ]);
     }
 }
