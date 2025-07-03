@@ -14,11 +14,6 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Admin Modules',
-        href: '/admin/modules',
-        icon: Package2,
-    },
-    {
         title: 'Modules',
         href: '/modules',
         icon: Package2,

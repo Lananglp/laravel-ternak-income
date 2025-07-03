@@ -147,8 +147,6 @@ export default function MembershipPage({ memberships }: MembershipProps) {
     const { auth } = usePage<SharedData>().props;
     const [items, setItems] = useState(memberships.map((m) => m.id));
     const [activeId, setActiveId] = useState<number | null>(null);
-    console.log(auth);
-    
     
     const sensors = useSensors(
         useSensor(PointerSensor, {

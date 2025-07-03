@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\Membership\MembershipController;
 use App\Models\Membership;
 
@@ -14,6 +15,9 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/files/{filepath}', [FileController::class, 'show'])->where('filepath', '.*')->name('files.show');
+    // Route::middleware('role:admin')->group(function () {
+    // });
 });
 
 require __DIR__.'/settings.php';

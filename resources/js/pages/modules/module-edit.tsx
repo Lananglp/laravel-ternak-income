@@ -10,11 +10,11 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
+import { Module } from "@/types";
 import { router, useForm } from "@inertiajs/react";
-import { ImageIcon, LoaderCircle, PlusIcon } from "lucide-react";
-import { FormEventHandler, useState } from "react";
+import { ImageIcon, LoaderCircle, PenIcon, PlusIcon } from "lucide-react";
+import { FormEventHandler, useEffect, useState } from "react";
 import { useDropzone } from 'react-dropzone'
 
 type ModuleForm = {
@@ -23,12 +23,13 @@ type ModuleForm = {
     thumbnail: File | null;
 };
 
-export const Modulecreate = () => {
+export const ModuleEdit = ({ module }: { module: Module }) => {
     const [open, setOpen] = useState(false);
+    const [imgError, setImgError] = useState(false);
 
     const { data, setData, post, errors, setError, clearErrors, reset, processing, recentlySuccessful } = useForm<Required<ModuleForm>>({
-        title: "",
-        description: "",
+        title: module.title || "",
+        description: module.description || "",
         thumbnail: null,
     });
 
@@ -46,6 +47,16 @@ export const Modulecreate = () => {
 
     const [preview, setPreview] = useState<string | null>(null)
 
+    const handleOpen = () => {
+        setOpen(true);
+        setPreview(`/files/${module.thumbnail}`);
+        // setData({
+        //     title: module.title,
+        //     description: module.description,
+        //     thumbnail: null,
+        // });
+    };
+
     const handleClose = () => {
         setOpen(false);
         setPreview(null);
@@ -56,20 +67,23 @@ export const Modulecreate = () => {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        // const formData = new FormData();
-        // formData.append("title", data.title);
-        // formData.append("description", data.description);
-        // if (data.thumbnail) {
-        //     formData.append("thumbnail", data.thumbnail);
-        // }
-
-        post(route("module.store"), {
+        post(route("module.update", { module: module.id }), {
             preserveScroll: true,
             onSuccess: () => {
                 handleClose();
+                router.get(route('module.index'), {}, {
+                    preserveScroll: true,
+                    only: ['modules']
+                });
             },
         });
     };
+
+    useEffect(() => {
+        if (imgError) {
+            setPreview(null);
+        }
+    }, [imgError, open]);
 
     return (
         <div>
@@ -77,21 +91,19 @@ export const Modulecreate = () => {
                 open={open}
                 onOpenChange={(nextOpen) => {
                     if (!processing) {
-                        if (nextOpen) setOpen(true);
+                        if (nextOpen) handleOpen();
                         else handleClose();
                     }
                 }}
             >
                 <DialogTrigger asChild>
-                    <Button type="button" variant="outline" className="mb-4">
-                        <PlusIcon /> tambah Modul
-                    </Button>
+                    <Button variant={'primary'} size={'xs'} title="Edit modul" ><PenIcon />Edit</Button>
                 </DialogTrigger>
                 <DialogContent className="max-h-[90dvh] overflow-y-auto">
                     <DialogHeader>
-                        <DialogTitle>Buat modul baru</DialogTitle>
+                        <DialogTitle>Edit modul</DialogTitle>
                         <DialogDescription>
-                            Silahkan mengisi form di bawah ini untuk menambahkan modul.
+                            Silahkan mengisi form di bawah ini untuk mengedit modul.
                         </DialogDescription>
                     </DialogHeader>
                     <form onSubmit={submit} className="flex flex-col gap-6">
@@ -101,7 +113,7 @@ export const Modulecreate = () => {
                                 <div {...getRootProps()} className={`h-48 flex justify-center items-center border border-dashed border-neutral-800 rounded-lg p-4 text-center cursor-pointer transition-all duration-200 ${!processing ? isDragActive ? 'bg-neutral-900 border-blue-500' : 'hover:bg-neutral-900' : ''}`}>
                                     <input {...getInputProps()} disabled={processing} />
                                     {preview ? (
-                                        <img src={preview} alt="Preview Thumbnail" className="mx-auto h-48 object-contain rounded" />
+                                        <img onError={() => setImgError(true)} src={preview} alt="Preview Thumbnail" className="mx-auto h-48 object-contain rounded" />
                                     ) : (
                                         <div className="space-y-2 text-neutral-500">
                                             <ImageIcon className="mx-auto size-10" />
@@ -120,7 +132,8 @@ export const Modulecreate = () => {
                                     type="text"
                                     autoFocus
                                     autoComplete="off"
-                                    onChange={(e) => setData({ ...data, title: e.target.value })}
+                                    value={data.title || ''}
+                                    onChange={(e) => setData("title", e.target.value)}
                                     disabled={processing}
                                     placeholder="Judul Modul"
                                 />
@@ -131,8 +144,9 @@ export const Modulecreate = () => {
                                 <Label htmlFor="description">Deskripsi</Label>
                                 <Textarea
                                     id="description"
+                                    value={data.description || ''}
                                     onChange={(e) =>
-                                        setData({ ...data, description: e.target.value })
+                                        setData("description", e.target.value)
                                     }
                                     disabled={processing}
                                     placeholder="Deskripsi Modul"
@@ -142,7 +156,7 @@ export const Modulecreate = () => {
 
                             <Button type="submit" className="mt-2 w-full" disabled={processing}>
                                 {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                                Buat Modul
+                                Simpan Perubahan
                             </Button>
                         </div>
                     </form>
@@ -152,4 +166,4 @@ export const Modulecreate = () => {
     );
 };
 
-export default Modulecreate;
+export default ModuleEdit;

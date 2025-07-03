@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('video_url');
             $table->integer('duration')->default(0); // dalam detik
-            $table->integer('position')->default(0); // urutan video
+            $table->unsignedInteger('position')->default(0);
             $table->boolean('is_preview')->default(false);
             $table->timestamps();
         });

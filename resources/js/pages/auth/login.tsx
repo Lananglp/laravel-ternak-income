@@ -40,8 +40,10 @@ export default function Login({ status, canResetPassword }: LoginProps) {
         window.location.href = 'http://localhost:8000/auth/google/redirect';
     };
 
+    const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+
     return (
-        <AuthLayout title="Log in to your account" description="Enter your email and password below to log in">
+        <AuthLayout title={`Masuk ke ${appName}`} description="Masukkan email dan kata sandi untuk masuk">
             <Head title="Log in" />
 
             <form className="flex flex-col gap-6" onSubmit={submit}>
@@ -54,7 +56,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             required
                             autoFocus
                             tabIndex={1}
-                            autoComplete='off'
+                            // autoComplete='off'
                             value={data.login}
                             onChange={(e) => setData('login', e.target.value)}
                             placeholder="username / email"
@@ -67,7 +69,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             <Label htmlFor="password">Password</Label>
                             {canResetPassword && (
                                 <TextLink href={route('password.request')} className="ml-auto text-sm" tabIndex={5}>
-                                    Forgot password?
+                                    Lupa password?
                                 </TextLink>
                             )}
                         </div>
@@ -76,7 +78,8 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             type="password"
                             required
                             tabIndex={2}
-                            autoComplete="current-password"
+                            // autoComplete="current-password"
+                            autoComplete="off"
                             value={data.password}
                             onChange={(e) => setData('password', e.target.value)}
                             placeholder="Password"
@@ -84,7 +87,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         <InputError message={errors.password} />
                     </div>
 
-                    <div className="flex items-center space-x-3">
+                    {/* <div className="flex items-center space-x-3">
                         <Checkbox
                             id="remember"
                             name="remember"
@@ -92,24 +95,24 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             onClick={() => setData('remember', !data.remember)}
                             tabIndex={3}
                         />
-                        <Label htmlFor="remember">Remember me</Label>
-                    </div>
+                        <Label htmlFor="remember"></Label>
+                    </div> */}
 
                     <Button type="submit" className="mt-4 w-full" tabIndex={4} disabled={processing}>
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                        Log in
+                        Masuk
                     </Button>
 
                     <Button type="button" onClick={handleLoginWithGoogle} className="w-full" tabIndex={4} disabled={processing} variant={'outline'}>
                         <FcGoogle />
-                        Login with Google
+                        Login dengan Google
                     </Button>
                 </div>
 
                 <div className="text-muted-foreground text-center text-sm">
-                    Don't have an account?{' '}
+                    Belum punya akun?{' '}
                     <TextLink href={route('register')} tabIndex={5}>
-                        Sign up
+                        Buat sekarang
                     </TextLink>
                 </div>
             </form>
