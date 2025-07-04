@@ -10,13 +10,18 @@ class FileController extends Controller
 {
     public function show(string $filepath): StreamedResponse
     {
-        // Periksa apakah file ada di disk 'local'
-        if (!Storage::disk('local')->exists($filepath)) {
-            abort(404);
+        // Ambil nama disk dari .env (default ke 'public' jika tidak disetel)
+        $disk = config('filesystems.default', 'local');
+
+        // Bersihkan path dari karakter berbahaya
+        $safePath = ltrim(str_replace(['../', './'], '', $filepath), '/');
+
+        // Periksa apakah file ada
+        if (!Storage::disk($disk)->exists($safePath)) {
+            abort(404, 'File not found.');
         }
 
         // Kembalikan file sebagai response
-        // Laravel akan otomatis mengatur header Content-Type yang benar
-        return Storage::disk('local')->response($filepath);
+        return Storage::disk($disk)->response($safePath);
     }
 }

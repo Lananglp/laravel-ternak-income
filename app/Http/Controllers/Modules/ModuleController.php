@@ -12,6 +12,13 @@ use Illuminate\Support\Str;
 
 class ModuleController extends Controller
 {
+    private string $disk;
+
+    public function __construct()
+    {
+        $this->disk = config('filesystems.default', 'local');
+    }
+
     public function index()
     {
         $modules = Module::withCount('videos')->orderBy('position')->get();
@@ -38,16 +45,12 @@ class ModuleController extends Controller
             'thumbnail' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // Pastikan fungsi ini ada di controller Anda atau di sebuah Trait
         $slug = $this->generateUniqueSlug($data['title']); 
 
-        // Proses dan kompres thumbnail jadi .webp
         if ($request->hasFile('thumbnail')) {
             $thumbnail = $request->file('thumbnail');
-
             $image = Image::read($thumbnail)->orient();
 
-            // Cek rasio 16:9
             $width = $image->width();
             $height = $image->height();
             $ratio = $width / $height;
@@ -56,31 +59,25 @@ class ModuleController extends Controller
             if (abs($ratio - $expected) > 0.05) {
                 return redirect()->back()->withErrors(['thumbnail' => 'Thumbnail harus memiliki rasio 16:9.']);
             }
-            
-            // Menggunakan facade Image yang sudah diimpor
+
             $resized = $image
-            ->resize(1280, 720, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            })
-            ->toWebp(70);
+                ->resize(1280, 720, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                })
+                ->toWebp(70);
 
-            // Generate nama unik
             $filename = Str::uuid() . '.webp';
-
-            // Simpan ke storage/app/public/modules/thumbnails
-            Storage::disk('local')->put("modules/thumbnails/{$filename}", (string) $resized);
-            
-            // Simpan path lengkap di database
             $thumbnailPath = "modules/thumbnails/{$filename}";
+
+            Storage::disk($this->disk)->put($thumbnailPath, (string) $resized);
         }
 
-
-        $module = Module::create([
+        Module::create([
             'title' => $data['title'],
             'description' => $data['description'],
             'slug' => $slug,
-            'thumbnail' => $thumbnailPath ?? null, // Gunakan path yang sudah disimpan
+            'thumbnail' => $thumbnailPath ?? null,
         ]);
 
         return redirect()->back()->with('success', 'Modul berhasil ditambahkan.');
@@ -94,13 +91,10 @@ class ModuleController extends Controller
             'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // Cek jika judul diubah, maka ubah slug
         if ($module->title !== $data['title']) {
-            $slug = $this->generateUniqueSlug($data['title']);
-            $module->slug = $slug;
+            $module->slug = $this->generateUniqueSlug($data['title']);
         }
 
-        // Proses jika thumbnail baru diupload
         if ($request->hasFile('thumbnail')) {
             $thumbnail = $request->file('thumbnail');
             $image = Image::read($thumbnail)->orient();
@@ -123,11 +117,10 @@ class ModuleController extends Controller
 
             $filename = Str::uuid() . '.webp';
             $path = "modules/thumbnails/{$filename}";
-            Storage::disk('local')->put($path, (string) $resized);
+            Storage::disk($this->disk)->put($path, (string) $resized);
 
-            // Hapus thumbnail lama jika ada
-            if ($module->thumbnail && Storage::disk('local')->exists($module->thumbnail)) {
-                Storage::disk('local')->delete($module->thumbnail);
+            if ($module->thumbnail && Storage::disk($this->disk)->exists($module->thumbnail)) {
+                Storage::disk($this->disk)->delete($module->thumbnail);
             }
 
             $module->thumbnail = $path;
@@ -142,9 +135,8 @@ class ModuleController extends Controller
 
     public function destroy(Module $module)
     {
-        // Hapus thumbnail dari storage jika ada
-        if ($module->thumbnail && Storage::disk('local')->exists($module->thumbnail)) {
-            Storage::disk('local')->delete($module->thumbnail);
+        if ($module->thumbnail && Storage::disk($this->disk)->exists($module->thumbnail)) {
+            Storage::disk($this->disk)->delete($module->thumbnail);
         }
 
         $module->delete();
@@ -154,7 +146,7 @@ class ModuleController extends Controller
 
     public function reorder(Request $request)
     {
-        $order = $request->input('order'); // [3, 1, 2, 4]
+        $order = $request->input('order');
 
         foreach ($order as $index => $id) {
             Module::where('id', $id)->update(['position' => $index]);
