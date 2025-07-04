@@ -17,6 +17,7 @@ use Midtrans\Config;
 use Midtrans\Notification;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class MembershipController extends Controller
 {
@@ -33,6 +34,15 @@ class MembershipController extends Controller
             //     'updateMembership' => auth()->user()->can('update', Membership::class),
             //     'deleteMembership' => auth()->user()->can('delete', Membership::class),
             // ],
+        ]);
+    }
+
+    public function info()
+    {
+        $memberActive = Auth::user()->load('membership');
+
+        return Inertia::render('membership/membership-info', [
+            'member' => $memberActive
         ]);
     }
 

@@ -26,8 +26,8 @@ class AppServiceProvider extends ServiceProvider
         Config::$isSanitized = true;
         Config::$is3ds = true;
 
-        // if (config('app.env') === 'local') {
-        //     URL::forceScheme('https');
-        // }
+        if (config('app.env') === 'local') {
+            URL::forceScheme('https');
+        }
     }
 }

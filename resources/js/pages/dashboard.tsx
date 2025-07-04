@@ -53,7 +53,7 @@ export default function Dashboard({
                         <div>
                             <div className={`border border-neutral-900 rounded-xl p-4 flex flex-row items-center gap-1`}>
                                 <div className='w-full text-zinc-400 space-y-2'>
-                                    <div className='text-nowrap text-orange-500'>Total Semua Transaksi</div>
+                                    <div className='text-nowrap text-orange-200'>Total Semua Transaksi</div>
                                     <div className='text-lg lg:text-3xl font-semibold text-white'>{todayTransaction ? formatRupiah(parseInt(totalTransaction.toString())) : 'Rp. 0'}</div>
                                     <div className='text-sm line-clamp-2'>Angka di atas adalah total semua transaksi yang tercatat pada sistem ini, anda dapat melihat detail transaksi pada menu Pembayaran.</div>
                                 </div>

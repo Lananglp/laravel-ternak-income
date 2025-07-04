@@ -129,8 +129,17 @@ function account({ users, roles, filters }: AccountProps) {
                                             </TableCell>
                                             <TableCell>{user.email}</TableCell>
                                             <TableCell>{user.username}</TableCell>
-                                            <TableCell className="text-center">{user.membership?.name ? user.membership.name : '-'}</TableCell>
-                                            <TableCell className="text-center">{user.membership_expires_at ? countdownDays(user.membership_expires_at) : '-'}</TableCell>
+                                            <TableCell className="text-center">
+                                                {user.membership_expires_at && new Date(user.membership_expires_at) > new Date()
+                                                    ? user.membership?.name ?? '-'
+                                                    : '-'}
+                                            </TableCell>
+
+                                            <TableCell className="text-center">
+                                                {user.membership_expires_at && new Date(user.membership_expires_at) > new Date()
+                                                    ? countdownDays(user.membership_expires_at)
+                                                    : '-'}
+                                            </TableCell>
                                             <TableCell className="text-center">{user.role?.name ? user.role.name : '-'}</TableCell>
                                             <TableCell className={`text-center ${user.provider === 'none' ? 'text-neutral-500' : ''}`}>{user.provider}</TableCell>
                                             <TableCell className="text-neutral-500">{formatDateTime(user.created_at)}</TableCell>

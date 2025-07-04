@@ -7,6 +7,7 @@ Route::post('/membership/callback', [MembershipController::class, 'callback'])->
 
 Route::middleware('auth')->group(function () {
     Route::get('membership', [MembershipController::class, 'index'])->name('membership.index');
+    Route::get('membership/info', [MembershipController::class, 'info'])->name('membership.info');
     Route::post('/membership/pay/{id}', [MembershipController::class, 'pay'])->name('membership.pay');
     // Route::post('/membership/callback', [MembershipController::class, 'callback'])->name('membership.callback');
     

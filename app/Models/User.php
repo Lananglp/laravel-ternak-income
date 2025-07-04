@@ -30,6 +30,9 @@ class User extends Authenticatable
         'username_changed_at',
         'password',
         'role_id',
+        'membership_id',
+        'membership_expires_at',
+        'membership_started_at',
     ];
 
     /**

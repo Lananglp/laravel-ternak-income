@@ -40,15 +40,15 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
         if (snapToken) {
             window.snap.pay(snapToken, {
                 onSuccess: function (result) {
-                    console.log('Pembayaran berhasil:', result);
-                    // window.location.href = '/membership/success'; // sesuaikan jika perlu
+                    // console.log('Pembayaran berhasil:', result);
+                    window.location.href = `/transactions/${result.order_id}`; // sesuaikan jika perlu
                 },
                 onPending: function (result) {
-                    console.log('Pembayaran tertunda:', result);
+                    // console.log('Pembayaran tertunda:', result);
                     // window.location.href = '/membership/pending'; // bisa juga redirect sesuai status
                 },
                 onError: function (result) {
-                    console.error('Pembayaran gagal:', result);
+                    // console.error('Pembayaran gagal:', result);
                     // window.location.href = '/membership/failed';
                 },
                 onClose: function () {

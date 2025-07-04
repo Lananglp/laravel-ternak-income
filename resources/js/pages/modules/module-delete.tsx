@@ -34,7 +34,7 @@ export const ModuleDelete = ({ module }: { module: Module }) => {
                 }}
             >
                 <DialogTrigger asChild>
-                    <Button title={`Hapus modul`} type="button" variant="destructive" size={'iconXs'} ><TrashIcon /></Button>
+                    <Button title={`Hapus modul`} type="button" variant="destructive" size={'iconXs'} className="rounded-full"><TrashIcon /></Button>
                 </DialogTrigger>
                 <DialogContent>
                     <DialogHeader>

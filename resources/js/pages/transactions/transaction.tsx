@@ -12,8 +12,8 @@ import { useState } from "react";
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Roles',
-        href: '/roles',
+        title: 'Pembayaran',
+        href: '/transactions',
     },
 ];
 
@@ -51,85 +51,93 @@ function RolesPage({ transactions }: RoleProps) {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {transactions.map((t, index) => (
-                                    <TableRow key={t.id} className="text-neutral-300">
-                                        <TableCell className="text-neutral-400 text-xs">{t.order_id}</TableCell>
-                                        <TableCell>{t.user.name}</TableCell>
-                                        <TableCell className="text-center">{t.membership.name}</TableCell>
-                                        <TableCell className="text-center">{formatRupiah(t.membership.price)}</TableCell>
-                                        {/* <TableCell className="text-center">{t.payment_type ? t.payment_type : '-'}</TableCell>
-                                        <TableCell className="text-center">{t.transaction_status ? t.transaction_status : '-'}</TableCell>
-                                        <TableCell className="text-center">{t.fraud_status ? t.fraud_status : '-'}</TableCell> */}
-                                        <TableCell className="text-center">
-                                            {(() => {
-                                                let response: any = {};
+                                {transactions && transactions.length > 0 ?
+                                    transactions.map((t, index) => (
+                                        <TableRow key={t.id} className="text-neutral-300">
+                                            <TableCell className="text-neutral-400 text-xs">{t.order_id}</TableCell>
+                                            <TableCell>{t.user.name}</TableCell>
+                                            <TableCell className="text-center">{t.membership.name}</TableCell>
+                                            <TableCell className="text-center">{formatRupiah(t.membership.price)}</TableCell>
+                                            {/* <TableCell className="text-center">{t.payment_type ? t.payment_type : '-'}</TableCell>
+                                            <TableCell className="text-center">{t.transaction_status ? t.transaction_status : '-'}</TableCell>
+                                            <TableCell className="text-center">{t.fraud_status ? t.fraud_status : '-'}</TableCell> */}
+                                            <TableCell className="text-center">
+                                                {(() => {
+                                                    let response: any = {};
 
-                                                try {
-                                                    response = typeof t.response === 'string' ? JSON.parse(t.response) : t.response;
-                                                } catch (err) {
-                                                    console.error('Gagal parse response JSON:', err);
-                                                    response = {};
-                                                }
+                                                    try {
+                                                        response = typeof t.response === 'string' ? JSON.parse(t.response) : t.response;
+                                                    } catch (err) {
+                                                        console.error('Gagal parse response JSON:', err);
+                                                        response = {};
+                                                    }
 
-                                                const bankName = response?.va_numbers?.[0]?.bank;
-                                                const vaNumber = response?.va_numbers?.[0]?.va_number;
+                                                    const bankName = response?.va_numbers?.[0]?.bank;
+                                                    const vaNumber = response?.va_numbers?.[0]?.va_number;
 
-                                                return (
-                                                    <div>
-                                                        <span className="text-sm">
-                                                            {formatPaymentType(t.payment_type, response?.store, bankName)}
+                                                    return (
+                                                        <div>
+                                                            <span className="text-sm">
+                                                                {formatPaymentType(t.payment_type, response?.store, bankName)}
+                                                            </span>
+
+                                                            {t.payment_type === 'cstore' && response?.payment_code && (
+                                                                <div className="text-xs text-muted-foreground mt-1">
+                                                                    Kode Bayar: {response.payment_code}
+                                                                </div>
+                                                            )}
+
+                                                            {t.payment_type === 'bank_transfer' && vaNumber && (
+                                                                <div className="text-xs text-muted-foreground mt-1">
+                                                                    VA: {vaNumber}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })()}
+                                            </TableCell>
+                                            <TableCell className="text-center">
+                                                {(() => {
+                                                    const { label, color } = formatTransactionStatus(t.transaction_status);
+                                                    return (
+                                                        <span className={`text-xs font-medium ${color}`}>
+                                                            {label}
                                                         </span>
+                                                    );
+                                                })()}
+                                            </TableCell>
 
-                                                        {t.payment_type === 'cstore' && response?.payment_code && (
-                                                            <div className="text-xs text-muted-foreground mt-1">
-                                                                Kode Bayar: {response.payment_code}
-                                                            </div>
-                                                        )}
-
-                                                        {t.payment_type === 'bank_transfer' && vaNumber && (
-                                                            <div className="text-xs text-muted-foreground mt-1">
-                                                                VA: {vaNumber}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                );
-                                            })()}
-                                        </TableCell>
-                                        <TableCell className="text-center">
-                                            {(() => {
-                                                const { label, color } = formatTransactionStatus(t.transaction_status);
-                                                return (
-                                                    <span className={`text-xs font-medium ${color}`}>
-                                                        {label}
-                                                    </span>
-                                                );
-                                            })()}
-                                        </TableCell>
-
-                                        <TableCell className="text-center">
-                                            {(() => {
-                                                const { label, color } = formatFraudStatus(t.fraud_status);
-                                                return (
-                                                    <span className={`text-xs font-medium ${color}`}>
-                                                        {label}
-                                                    </span>
-                                                );
-                                            })()}
-                                        </TableCell>
-                                        <TableCell className="text-center">
-                                            <ResponseDialog response={t.response} />
-                                        </TableCell>
-                                        <TableCell className="text-center text-neutral-500">{t.paid_at !== null ? formatDateTime(t.paid_at) : '-'}</TableCell>
-                                        <TableCell className="text-center text-neutral-500">{t.created_at !== null ? formatDateTime(t.created_at) : '-'}</TableCell>
-                                        <TableCell className="text-center text-neutral-500">{t.updated_at && t.updated_at !== t.created_at ? formatDateTime(t.updated_at) : '-'}</TableCell>
-                                        {/* <TableCell>
-                                            <div className="text-center flex items-center justify-center gap-1">
-                                                <RoleEdit role={role} />
-                                                <RoleDelete role={role} />
-                                            </div>
-                                        </TableCell> */}
-                                    </TableRow>
-                                ))}
+                                            <TableCell className="text-center">
+                                                {(() => {
+                                                    const { label, color } = formatFraudStatus(t.fraud_status);
+                                                    return (
+                                                        <span className={`text-xs font-medium ${color}`}>
+                                                            {label}
+                                                        </span>
+                                                    );
+                                                })()}
+                                            </TableCell>
+                                            <TableCell className="text-center">
+                                                <ResponseDialog response={t.response} />
+                                            </TableCell>
+                                            <TableCell className="text-center text-neutral-500">{t.paid_at !== null ? formatDateTime(t.paid_at) : '-'}</TableCell>
+                                            <TableCell className="text-center text-neutral-500">{t.created_at !== null ? formatDateTime(t.created_at) : '-'}</TableCell>
+                                            <TableCell className="text-center text-neutral-500">{t.updated_at && t.updated_at !== t.created_at ? formatDateTime(t.updated_at) : '-'}</TableCell>
+                                            {/* <TableCell>
+                                                <div className="text-center flex items-center justify-center gap-1">
+                                                    <RoleEdit role={role} />
+                                                    <RoleDelete role={role} />
+                                                </div>
+                                            </TableCell> */}
+                                        </TableRow>
+                                    )) : (
+                                        <TableRow>
+                                            <TableCell colSpan={12} className="text-neutral-500">
+                                                Belum ada data pembayaran
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                }
                             </TableBody>
                         </Table>
                     </ScrollArea>

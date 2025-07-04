@@ -90,7 +90,7 @@ function SortableItem({ membership, role }: { membership: Membership, role: stri
     return (
         <div ref={setNodeRef} style={style} className={`rounded-xl border ${isOverItem ? 'border-dashed border-neutral-500' : 'border-transparent'}`}>
             <div className={`bg-neutral-950 rounded-2xl`}>
-                <div className={`bg-gradient-to-l from-orange-500/15 to-neutral-900 border border-neutral-800 rounded-xl p-4 flex flex-row items-center gap-1`}>
+                <div className={`bg-gradient-to-r from-neutral-900 to-transparent border border-neutral-800 rounded-xl p-4 flex flex-row items-center gap-1`}>
                     {role === 'admin' &&
                         <Button
                             {...attributes}
@@ -104,7 +104,7 @@ function SortableItem({ membership, role }: { membership: Membership, role: stri
                     }
                     <div className='w-full text-zinc-400'>
                         <div className='flex justify-between gap-10'>
-                            <div className='font-medium text-orange-500'>{membership.name}</div>
+                            <div className='font-semibold text-orange-200'>{membership.name}</div>
                             <div className='text-nowrap text-white font-semibold'>{formatRupiah(membership.price)}</div>
                         </div>
                         <div className='flex justify-between gap-10'>

@@ -111,7 +111,7 @@ export default function Register() {
                         Buat akun
                     </Button>
 
-                    <Button type="button" onClick={handleLoginWithGoogle} className="w-full" tabIndex={4} disabled={processing} variant={'outline'}>
+                    <Button type="button" onClick={handleLoginWithGoogle} className="w-full" tabIndex={6} disabled={processing} variant={'outline'}>
                         <FcGoogle />
                         Login dengan Google
                     </Button>
@@ -119,7 +119,7 @@ export default function Register() {
 
                 <div className="text-muted-foreground text-center text-sm">
                     Sudah punya akun?{' '}
-                    <TextLink href={route('login')} tabIndex={6}>
+                    <TextLink href={route('login')} tabIndex={7}>
                         Masuk disini
                     </TextLink>
                 </div>

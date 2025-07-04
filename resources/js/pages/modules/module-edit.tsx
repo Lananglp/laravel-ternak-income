@@ -97,7 +97,7 @@ export const ModuleEdit = ({ module }: { module: Module }) => {
                 }}
             >
                 <DialogTrigger asChild>
-                    <Button variant={'primary'} size={'xs'} title="Edit modul" ><PenIcon />Edit</Button>
+                    <Button variant={'primary'} size={'iconXs'} title="Edit modul" className="rounded-full"><PenIcon /></Button>
                 </DialogTrigger>
                 <DialogContent className="max-h-[90dvh] overflow-y-auto">
                     <DialogHeader>

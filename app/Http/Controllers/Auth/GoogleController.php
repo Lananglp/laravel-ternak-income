@@ -37,7 +37,7 @@ class GoogleController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('dashboard');
+        return redirect()->route('module.index', absolute: false);
     }
 
     private function generateUsername(string $name): string
