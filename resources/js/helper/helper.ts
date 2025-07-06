@@ -77,3 +77,26 @@ export function formatFraudStatus(status: string | null): { label: string, color
     };
     return status ? map[status] || { label: status, color: 'text-zinc-300' } : { label: '-', color: 'text-zinc-300' };
 }
+
+export function formatDuration(seconds: number): string {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = Math.floor(seconds % 60);
+
+    const hh = h > 0 ? `${h}:` : '';
+    const mm = h > 0 ? String(m).padStart(2, '0') : `${m}`;
+    const ss = String(s).padStart(2, '0');
+
+    return `${hh}${mm}:${ss}`;
+}
+
+export function formatDurationText(seconds: number): string {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+
+    const parts = [];
+    if (hours > 0) parts.push(`${hours} jam`);
+    if (minutes > 0) parts.push(`${minutes} menit`);
+
+    return parts.length > 0 ? parts.join(' ') : '0 menit';
+}

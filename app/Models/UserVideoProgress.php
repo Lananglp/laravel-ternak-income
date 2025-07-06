@@ -10,7 +10,13 @@ class UserVideoProgress extends Model
         'user_id',
         'module_video_id',
         'watched_seconds',
+        'watched_at',
         'is_completed',
+    ];
+
+    protected $casts = [
+        'is_completed' => 'boolean',
+        'watched_at' => 'datetime',
     ];
 
     public function video(): BelongsTo

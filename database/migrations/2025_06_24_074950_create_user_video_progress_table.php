@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('module_video_id')->constrained()->onDelete('cascade');
             $table->unsignedInteger('watched_seconds')->default(0);
             $table->boolean('is_completed')->default(false);
+            $table->timestamp('watched_at')->nullable();
             $table->timestamps();
 
             $table->unique(['user_id', 'module_video_id']);

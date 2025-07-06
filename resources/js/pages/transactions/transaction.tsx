@@ -53,11 +53,11 @@ function RolesPage({ transactions }: RoleProps) {
                             <TableBody>
                                 {transactions && transactions.length > 0 ?
                                     transactions.map((t, index) => (
-                                        <TableRow key={t.id} className="text-neutral-300">
+                                        <TableRow key={index} className="text-neutral-300">
                                             <TableCell className="text-neutral-400 text-xs">{t.order_id}</TableCell>
                                             <TableCell>{t.user.name}</TableCell>
-                                            <TableCell className="text-center">{t.membership.name}</TableCell>
-                                            <TableCell className="text-center">{formatRupiah(t.membership.price)}</TableCell>
+                                            <TableCell className="text-center">{t.membership ? t.membership.name : <span className="text-xs text-muted-foreground">Data dihapus</span>}</TableCell>
+                                            <TableCell className="text-center">{t.membership ? formatRupiah(t.membership.price) : <span className="text-xs text-muted-foreground">Data dihapus</span>}</TableCell>
                                             {/* <TableCell className="text-center">{t.payment_type ? t.payment_type : '-'}</TableCell>
                                             <TableCell className="text-center">{t.transaction_status ? t.transaction_status : '-'}</TableCell>
                                             <TableCell className="text-center">{t.fraud_status ? t.fraud_status : '-'}</TableCell> */}

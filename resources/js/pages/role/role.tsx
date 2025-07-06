@@ -57,7 +57,7 @@ function RolesPage({ roles }: RoleProps) {
                                         <TableCell>
                                             <div className="text-center flex items-center justify-center gap-1">
                                                 <RoleEdit role={role} />
-                                                <RoleDelete role={role} />
+                                                {/* <RoleDelete role={role} /> */}
                                             </div>
                                         </TableCell>
                                     </TableRow>

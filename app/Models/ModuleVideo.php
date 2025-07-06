@@ -13,6 +13,7 @@ class ModuleVideo extends Model
         'title',
         'description',
         'video_url',
+        'thumbnail',
         'duration',
         'position',
         'is_preview',
@@ -26,5 +27,12 @@ class ModuleVideo extends Model
     public function progress(): HasMany
     {
         return $this->hasMany(UserVideoProgress::class);
+    }
+
+    public function userProgress()
+    {
+        // Pastikan user sudah login, jika tidak, relationship ini bisa dikosongkan
+        return $this->hasOne(UserVideoProgress::class, 'module_video_id')
+                    ->where('user_id', auth()->id());
     }
 }

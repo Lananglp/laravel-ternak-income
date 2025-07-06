@@ -147,11 +147,11 @@ export default function TransactionShow({ transaction }: Props) {
                                     </div>
                                     <div className="space-y-1">
                                         <p className="text-sm text-neutral-300">Membership :</p>
-                                        <p>{transaction.membership.name}</p>
+                                        <p>{transaction.membership ? transaction.membership.name : <span className="text-xs text-muted-foreground font-normal">Data Membership dihapus</span>}</p>
                                     </div>
                                     <div className="space-y-1">
                                         <p className="text-sm text-neutral-300">Harga Membership :</p>
-                                        <p className="font-semibold">{formatRupiah(transaction.membership.price)}</p>
+                                        <p className="font-semibold">{transaction.membership ? formatRupiah(transaction.membership.price) : <span className="text-xs text-muted-foreground font-normal">Data Membership dihapus</span>}</p>
                                     </div>
                                     <div className="space-y-1">
                                         <p className="text-sm text-neutral-300">Metode Pembayaran :</p>

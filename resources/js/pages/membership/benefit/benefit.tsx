@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { Membership } from '@/types';
 import { router } from '@inertiajs/react';
-import { CheckIcon, GripVertical, PenIcon, PlusIcon, TrashIcon, XIcon } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import { CheckIcon, GripVertical, XIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import BenefitCreate from './benefit-create';
 import {
     DndContext,
@@ -105,6 +105,10 @@ function MembershipBenefit({ membership, role }: { membership: Membership, role:
 
             router.post(route('benefits.reorder', membership.id), {
                 order: newItems,
+            }, {
+                preserveScroll: true,
+                preserveState: true,
+                only: [],
             });
         }
 
@@ -139,7 +143,7 @@ function MembershipBenefit({ membership, role }: { membership: Membership, role:
                         )}
                     </ul>
                 </SortableContext>
-                <DragOverlay>
+                {/* <DragOverlay>
                     {activeId ? (() => {
                         const benefit = membership.benefits?.find((b) => b.id === activeId);
                         if (!benefit) return null;
@@ -151,7 +155,7 @@ function MembershipBenefit({ membership, role }: { membership: Membership, role:
                             />
                         );
                     })() : null}
-                </DragOverlay>
+                </DragOverlay> */}
             </DndContext>
             {role === 'admin' &&
                 <div>

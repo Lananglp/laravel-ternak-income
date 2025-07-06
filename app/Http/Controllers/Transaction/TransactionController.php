@@ -19,16 +19,21 @@ class TransactionController extends Controller
         ]);
     }
 
-    public function show( string $orderId )
+    public function show(string $orderId)
     {
-        $transaction = Transaction::with(['user', 'membership'])->where('order_id', $orderId)->first();
+        $user = auth()->user();
 
-        if (!$transaction) {
-            abort(404);
+        $transaction = Transaction::with(['user', 'membership'])
+            ->where('order_id', $orderId)
+            ->firstOrFail();
+
+        // Jika user bukan pemilik transaksi dan bukan admin, beri 403
+        if ($transaction->user_id !== $user->id && $user->role->slug !== 'admin') {
+            abort(403, 'Anda tidak memiliki akses untuk melihat transaksi ini.');
         }
 
         return Inertia::render('transactions/transaction-show', [
-            'transaction' => $transaction
+            'transaction' => $transaction,
         ]);
     }
 }

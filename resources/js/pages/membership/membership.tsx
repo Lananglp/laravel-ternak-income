@@ -51,46 +51,20 @@ function SortableItem({ membership, role }: { membership: Membership, role: stri
         opacity: isDragging ? 0.5 : 1,
     };
 
-    // const { flash } = usePage<SharedData>().props;
-
     const handleBuy = (membershipId: number) => {
         router.post(
-            route('membership.pay', membershipId), // <--- sesuai dengan route baru
+            route('membership.pay', membershipId),
             {},
             {
                 preserveScroll: true,
-                // onSuccess: (page) => {
-                //     const token = page.props.flash?.snap_token || null;
-
-                //     if (!token) {
-                //         alert('Gagal mendapatkan token pembayaran');
-                //         return;
-                //     }
-
-                //     window.snap.pay(token, {
-                //         onSuccess: function (result) {
-                //             alert('Pembayaran berhasil!');
-                //             window.location.reload();
-                //         },
-                //         onPending: function () {
-                //             alert('Menunggu pembayaran...');
-                //         },
-                //         onError: function () {
-                //             alert('Pembayaran gagal!');
-                //         },
-                //         onClose: function () {
-                //             alert('Kamu menutup popup pembayaran.');
-                //         },
-                //     });
-                // },
             }
         );
     };
 
     return (
         <div ref={setNodeRef} style={style} className={`rounded-xl border ${isOverItem ? 'border-dashed border-neutral-500' : 'border-transparent'}`}>
-            <div className={`bg-neutral-950 rounded-2xl`}>
-                <div className={`bg-gradient-to-r from-neutral-900 to-transparent border border-neutral-800 rounded-xl p-4 flex flex-row items-center gap-1`}>
+            <div className={`bg-neutral-900 rounded-2xl shadow-2xl shadow-white/30`}>
+                <div className={`bg-gradient-to-r from-neutral-800 to-transparent border border-neutral-800 rounded-xl p-4 flex flex-row items-center gap-1`}>
                     {role === 'admin' &&
                         <Button
                             {...attributes}
@@ -104,7 +78,7 @@ function SortableItem({ membership, role }: { membership: Membership, role: stri
                     }
                     <div className='w-full text-zinc-400'>
                         <div className='flex justify-between gap-10'>
-                            <div className='font-semibold text-orange-200'>{membership.name}</div>
+                            <div className='font-semibold text-white'>{membership.name}</div>
                             <div className='text-nowrap text-white font-semibold'>{formatRupiah(membership.price)}</div>
                         </div>
                         <div className='flex justify-between gap-10'>
@@ -114,7 +88,7 @@ function SortableItem({ membership, role }: { membership: Membership, role: stri
                     </div>
                 </div>
             </div>
-            <div className='bg-neutral-900 border-x border-b border-neutral-800 rounded-b-xl mx-3 px-3 pb-3 pt-2 space-y-2'>
+            <div className='bg-gradient-to-b from-neutral-900 to-neutral-800 border-x border-b border-neutral-800 rounded-b-xl mx-3 px-3 pb-3 pt-2 space-y-2'>
                 {role === 'admin' &&
                     <div className='flex justify-between items-center gap-2 mb-2 border-b pb-2'>
                         <h6 className='text-sm'>Benefit :</h6>
@@ -127,8 +101,9 @@ function SortableItem({ membership, role }: { membership: Membership, role: stri
                 <MembershipBenefit membership={membership} role={role} />
                 {role === 'user' &&
                     <Button
-                        variant={'primary'}
-                        className='w-full rounded-lg mt-2'
+                        variant={'default'}
+                        className='w-full rounded-full mt-2 shadow-2xl shadow-white'
+                        // className='w-full rounded-full mt-2 bg-purple-800 hover:bg-purple-700 text-white shadow-2xl hover:shadow-xl shadow-purple-500 hover:shadow-purple-500/50 transition duration-200'
                         onClick={() => handleBuy(membership.id)}
                     >
                         Beli Sekarang
@@ -174,7 +149,11 @@ export default function MembershipPage({ memberships }: MembershipProps) {
             setItems(newItems);
 
             // Kirim urutan baru ke backend
-            router.post(route('membership.reorder'), { order: newItems });
+            router.post(route('membership.reorder'), { order: newItems }, {
+                preserveScroll: true,
+                preserveState: true,
+                only: [],
+            });
         }
     };
 

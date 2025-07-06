@@ -15,9 +15,13 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    // private !auth
     Route::get('/files/{filepath}', [FileController::class, 'show'])->where('filepath', '.*')->name('files.show');
-    // Route::middleware('role:admin')->group(function () {
-    // });
+    // private full
+    Route::middleware('membership')->group(function () {
+        Route::get('/private/images/{filepath}', [FileController::class, 'videoTumbnail'])->where('filepath', '.*')->name('videos.thumbnail');
+        Route::get('/private/{filepath}', [FileController::class, 'video'])->where('filepath', '.*')->name('videos.stream');
+    });
 });
 
 require __DIR__.'/settings.php';

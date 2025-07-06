@@ -111,7 +111,34 @@ export interface Module {
     description: string;
     thumbnail: string;
     position: number;
+    videos?: ModuleVideo[];
     videos_count: number;
+    created_at: string | null;
+    updated_at: string | null;
+}
+
+export interface ModuleVideo {
+    id: number;
+    module_id: number;
+    title: string;
+    description: string;
+    thumbnail: string | null;
+    video_url: string;
+    duration: number;
+    position: number;
+    is_preview : boolean;
+    user_progress: UserVideoProgress | null;
+    created_at: string | null;
+    updated_at: string | null;
+}
+
+export interface UserVideoProgress {
+    id: number;
+    user_id: number;
+    module_video_id: number;
+    watched_seconds: number;
+    is_completed: boolean;
+    watched_at: string | null;
     created_at: string | null;
     updated_at: string | null;
 }

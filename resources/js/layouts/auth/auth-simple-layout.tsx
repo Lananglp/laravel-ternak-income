@@ -13,9 +13,9 @@ interface AuthLayoutProps {
 export default function AuthSimpleLayout({ children, title, description }: PropsWithChildren<AuthLayoutProps>) {
     return (
         <>
-            <div className="fixed inset-0 bg-gradient-to-br from-red-500/5 from-[0%] via-transparent via-[55%] to-red-500/5 to-[0%] pointer-events-none">
+            {/* <div className="fixed inset-0 bg-gradient-to-br from-red-500/5 from-[0%] via-transparent via-[55%] to-red-500/5 to-[0%] pointer-events-none">
                 <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-tr from-transparent from-[0%] via-transparent via-[65%] to-red-500/5 to-[0%] pointer-events-none" />
-                {/* <Spotlight />
+                <Spotlight />
                 <div className="hidden dark:block w-full absolute -z-10 pointer-events-none inset-0 h-screen">
                     <SparklesCore
                         id="tsparticlesfullpage"
@@ -27,7 +27,10 @@ export default function AuthSimpleLayout({ children, title, description }: Props
                         className="w-full h-full"
                         particleColor="#FFFFFF"
                     />
-                </div> */}
+                </div>
+            </div> */}
+            <div className="fixed inset-0 bg-gradient-to-br from-neutral-500/5 from-[0%] via-transparent via-[55%] to-neutral-500/5 to-[0%] pointer-events-none">
+                <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-tr from-transparent from-[0%] via-transparent via-[65%] to-neutral-500/5 to-[0%] pointer-events-none" />
             </div>
             <div className="bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
                 <div className="w-full max-w-sm">

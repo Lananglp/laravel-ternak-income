@@ -3,6 +3,7 @@
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\RoleMiddleware;
+use App\Http\Middleware\EnsureMembershipIsActive;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -17,13 +18,13 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'membership' => \App\Http\Middleware\EnsureMembershipIsActive::class,
         ]);
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
         $middleware->validateCsrfTokens(except: [
             // 'stripe/*',
             'membership/callback',
             // 'http://example.com/foo/*',
-            // 'https://86f4-139-5-155-41.ngrok-free.app/membership/callback',
         ]);
 
         $middleware->web(append: [

@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Module;
+use App\Models\UserVideoProgress;
 use Intervention\Image\Laravel\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class ModuleController extends Controller
 {
@@ -21,21 +23,86 @@ class ModuleController extends Controller
 
     public function index()
     {
-        $modules = Module::withCount('videos')->orderBy('position')->get();
+        $user = auth()->user();
+
+        $modules = Module::with([
+            'videos' => function ($query) {
+                $query->orderBy('position');
+            },
+            'videos.userProgress' => function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            }
+        ])
+        ->orderBy('position')
+        ->get();
+
+        // Hitung progress dan total durasi per modul
+        $modules = $modules->map(function ($module) use ($user) {
+            $totalVideos = $module->videos->count();
+
+            $completedCount = $module->videos->filter(function ($video) {
+                return $video->userProgress && $video->userProgress->is_completed;
+            })->count();
+
+            $totalDuration = $module->videos->sum('duration');
+
+            $progressPercentage = $totalVideos > 0
+                ? round(($completedCount / $totalVideos) * 100)
+                : 0;
+
+            return [
+                ...$module->toArray(),
+                'progress_percentage' => $progressPercentage,
+                'total_duration' => $totalDuration,
+                'total_videos_count' => $totalVideos,
+            ];
+        });
 
         return Inertia::render('modules/module', [
             'modules' => $modules
         ]);
     }
 
-    public function adminIndex()
+    public function show($slug)
     {
-        $modules = Module::withCount('videos')->get();
+        $user = Auth::user();
 
-        return Inertia::render('modules/admin/admin-module', [
-            'modules' => $modules
+        $module = Module::where('slug', $slug)
+            ->with(['videos' => function ($query) use ($user) {
+                $query->orderBy('position')
+                    ->with(['userProgress' => function ($q) use ($user) {
+                        $q->where('user_id', $user->id);
+                    }]);
+            }])
+            ->firstOrFail();
+
+        // Hitung total durasi semua video dalam modul
+        $totalDuration = $module->videos->sum('duration');
+
+        // Hitung total video yang sudah selesai
+        $completedCount = UserVideoProgress::where('user_id', $user->id)
+            ->whereIn('module_video_id', $module->videos->pluck('id'))
+            ->where('is_completed', true)
+            ->count();
+
+        $totalVideos = $module->videos->count();
+        $progressPercentage = $totalVideos > 0 ? round(($completedCount / $totalVideos) * 100) : 0;
+
+        return Inertia::render('modules/module-show', [
+            'module' => $module,
+            'totalDuration' => $totalDuration ?? 0,
+            'moduleProgressPercentage' => $progressPercentage,
         ]);
     }
+
+    // public function adminIndex()
+    // {
+    //     $modules = Module::withCount('videos')->get();
+
+    //     return Inertia::render('modules/admin/admin-module', [
+    //         'modules' => $modules
+    //     ]);
+    // }
 
     public function store(Request $request)
     {
@@ -56,7 +123,7 @@ class ModuleController extends Controller
             $ratio = $width / $height;
             $expected = 16 / 9;
 
-            if (abs($ratio - $expected) > 0.05) {
+            if (abs($ratio - $expected) > 0.5) {
                 return redirect()->back()->withErrors(['thumbnail' => 'Thumbnail harus memiliki rasio 16:9.']);
             }
 
@@ -104,7 +171,7 @@ class ModuleController extends Controller
             $ratio = $width / $height;
             $expected = 16 / 9;
 
-            if (abs($ratio - $expected) > 0.05) {
+            if (abs($ratio - $expected) > 0.5) {
                 return redirect()->back()->withErrors(['thumbnail' => 'Thumbnail harus memiliki rasio 16:9.']);
             }
 
@@ -153,17 +220,6 @@ class ModuleController extends Controller
         }
 
         return back()->with('success', 'Modul diurutkan.');
-    }
-
-    public function show($slug)
-    {
-        $module = Module::with(['videos' => function ($query) {
-            $query->orderBy('position');
-        }])->where('slug', $slug)->firstOrFail();
-
-        return Inertia::render('modules/module-show', [
-            'module' => $module
-        ]);
     }
 
     private function generateUniqueSlug(string $title): string

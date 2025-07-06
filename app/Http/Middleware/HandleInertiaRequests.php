@@ -49,7 +49,7 @@ class HandleInertiaRequests extends Middleware
             // ],
             'auth' => [
                 'user' => fn () => Auth::check()
-                    ? Auth::user()->load('role') // <--- ini yang penting
+                    ? Auth::user()->load(['role', 'membership']) // <--- ini yang penting
                     : null,
             ],
             'ziggy' => fn (): array => [
