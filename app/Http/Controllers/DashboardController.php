@@ -8,11 +8,19 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\Transaction;
 use App\Models\Membership;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
+        $user = Auth::user()->load('role');
+        $isAdmin = Auth::user()->role->slug === 'admin';
+
+        if (!$isAdmin) {
+            return to_route('module.index');
+        }
+
         // $now = now();
 
         // // Semua transaksi sukses (settlement atau capture)

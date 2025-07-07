@@ -38,7 +38,8 @@ class ProfileController extends Controller
                     'browser' => $agent->browser(),
                     'platform' => $agent->platform(),
                     'device' => $agent->device(),
-                    'last_active' => Carbon::createFromTimestamp($session->last_activity)->diffForHumans(),
+                    // 'last_active' => Carbon::createFromTimestamp($session->last_activity)->diffForHumans(),
+                    'last_active' => Carbon::createFromTimestamp($session->last_activity),
                 ];
             });
 

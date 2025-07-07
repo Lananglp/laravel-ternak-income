@@ -18,7 +18,7 @@ import { PenLine } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Profile settings',
+        title: 'Pengaturan Profil',
         href: '/settings/profile',
     },
 ];
@@ -88,14 +88,14 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Profile settings" />
+            <Head title="Pengaturan Profil" />
 
             <SettingsLayout>
                 <div className="space-y-6">
-                    <HeadingSmall title="Profile information" description="Update your name and email address" />
+                    <HeadingSmall title="Informasi Profil" description="Perbarui informasi profil akun dan alamat email Anda." />
 
                     <form onSubmit={submit} className="space-y-6">
-                        <Avatar className="h-32 w-32 overflow-hidden rounded-full">
+                        {/* <Avatar className="h-32 w-32 overflow-hidden rounded-full">
                             <AvatarImage
                                 src={preview || auth.user.avatar}
                                 alt={auth.user.name}
@@ -112,16 +112,16 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                             className="hidden"
                             ref={fileInputRef}
                             onChange={handleAvatarChange}
-                        />
+                        /> */}
 
                         <div className="flex gap-2">
-                            <Button
+                            {/* <Button
                                 type="button"
                                 onClick={() => fileInputRef.current?.click()}
                                 variant="outline"
                             >
                                 <PenLine />Ubah Avatar
-                            </Button>
+                            </Button> */}
 
                             {preview && (
                                 <Button
@@ -135,7 +135,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="name">Name</Label>
+                            <Label htmlFor="name">Nama Lengkap</Label>
 
                             <Input
                                 id="name"
@@ -144,7 +144,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 onChange={(e) => setData('name', e.target.value)}
                                 required
                                 autoComplete="name"
-                                placeholder="Full name"
+                                placeholder="Nama Lengkap"
                             />
 
                             <InputError className="mt-2" message={errors.name} />
@@ -181,7 +181,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="email">Email address</Label>
+                            <Label htmlFor="email">Alamat email</Label>
 
                             <Input
                                 id="email"
@@ -190,8 +190,8 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
                                 required
-                                autoComplete="username"
-                                placeholder="Email address"
+                                autoComplete="email"
+                                placeholder="Alamat email"
                             />
 
                             <InputError className="mt-2" message={errors.email} />
@@ -200,27 +200,27 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                         {mustVerifyEmail && auth.user.email_verified_at === null && (
                             <div>
                                 <p className="text-muted-foreground -mt-4 text-sm">
-                                    Your email address is unverified.{' '}
+                                    Alamat email Anda belum diverifikasi.{' '}
                                     <Link
                                         href={route('verification.send')}
                                         method="post"
                                         as="button"
                                         className="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
                                     >
-                                        Click here to resend the verification email.
+                                        Klik di sini untuk mengirim ulang email verifikasi.
                                     </Link>
                                 </p>
 
                                 {status === 'verification-link-sent' && (
                                     <div className="mt-2 text-sm font-medium text-green-600">
-                                        A new verification link has been sent to your email address.
+                                        Tautan verifikasi baru telah dikirim ke alamat email Anda.
                                     </div>
                                 )}
                             </div>
                         )}
 
                         <div className="grid gap-2">
-                            <Label htmlFor="phone">Phone Number</Label>
+                            <Label htmlFor="phone">Nomor HP / Whatsapp</Label>
 
                             <Input
                                 id="phone"
@@ -248,7 +248,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                         </div>
 
                         <div className="flex items-center gap-4">
-                            <Button disabled={processing}>Save</Button>
+                            <Button disabled={processing}>Simpan Perubahan</Button>
 
                             <Transition
                                 show={recentlySuccessful}
@@ -257,7 +257,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 leave="transition ease-in-out"
                                 leaveTo="opacity-0"
                             >
-                                <p className="text-sm text-neutral-600">Saved</p>
+                                <p className="text-sm text-neutral-600">Tersimpan</p>
                             </Transition>
                         </div>
                     </form>

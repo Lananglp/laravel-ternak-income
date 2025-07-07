@@ -8,10 +8,11 @@ import HeadingSmall from '@/components/heading-small';
 
 import { Monitor, Smartphone, Tablet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { formatDateTime } from '@/helper/helper';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Profile settings',
+        title: 'Pengaturan Perangkat',
         href: '/settings/profile',
     },
 ];
@@ -48,11 +49,11 @@ export default function SessionListPage({ sessions }: { sessions: Session[] }) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Sessions settings" />
+            <Head title="Pengaturan Perangkat" />
 
             <SettingsLayout>
                 <div className="space-y-6">
-                    <HeadingSmall title="Active Sessions" description="Below is a list of devices logged in with your account." />
+                    <HeadingSmall title="Perangkat Tertaut" description="Berikut ini daftar perangkat yang masuk dengan akun Anda." />
 
                     <div className='space-y-2'>
                         {sessions.map((session) => (
@@ -69,12 +70,12 @@ export default function SessionListPage({ sessions }: { sessions: Session[] }) {
                                         </div>
 
                                         <div className="text-sm text-muted-foreground">
-                                            Last active: {session.last_active}
+                                            Terakhir Aktif: {formatDateTime(session.last_active)}
                                         </div>
                                     </div>
 
                                     <div>
-                                        {session.is_current_device && <Badge variant="default">This device</Badge>}
+                                        {session.is_current_device && <Badge variant="default">Perangkat ini</Badge>}
 
                                         {!session.is_current_device && (
                                             <Button
@@ -82,7 +83,7 @@ export default function SessionListPage({ sessions }: { sessions: Session[] }) {
                                                 size="xs"
                                                 onClick={() => endSession(session.id)}
                                             >
-                                                End session
+                                                Keluar Perangkat
                                             </Button>
                                         )}
                                     </div>

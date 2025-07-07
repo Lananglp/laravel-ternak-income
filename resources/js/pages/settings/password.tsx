@@ -14,7 +14,7 @@ import { PiEyeBold, PiEyeClosedBold } from 'react-icons/pi';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Password settings',
+        title: 'Pengaturan Password',
         href: '/settings/password',
     },
 ];
@@ -54,11 +54,11 @@ export default function Password({ is_password_empty }: { is_password_empty?: bo
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Password settings" />
+            <Head title="Pengaturan Password" />
 
             <SettingsLayout>
                 <div className="space-y-6">
-                    <HeadingSmall title="Update password" description="Ensure your account is using a long, random password to stay secure" />
+                    <HeadingSmall title="Ubah Password" description="Pastikan akun Anda menggunakan kata sandi yang panjang dan acak untuk menjaga keamanannya" />
 
                     <form onSubmit={updatePassword} className="space-y-6">
 
@@ -141,7 +141,7 @@ export default function Password({ is_password_empty }: { is_password_empty?: bo
                         </div>
 
                         <div className="flex items-center gap-4">
-                            <Button disabled={processing}>Save password</Button>
+                            <Button disabled={processing}>Simpan password</Button>
 
                             <Transition
                                 show={recentlySuccessful}
@@ -150,7 +150,7 @@ export default function Password({ is_password_empty }: { is_password_empty?: bo
                                 leave="transition ease-in-out"
                                 leaveTo="opacity-0"
                             >
-                                <p className="text-sm text-neutral-600">Saved</p>
+                                <p className="text-sm text-neutral-600">Tersimpan</p>
                             </Transition>
                         </div>
                     </form>

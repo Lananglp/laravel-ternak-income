@@ -57,7 +57,7 @@ export default function MembershipPage({ member }: MembershipProps) {
             <Head title="Membership Info" />
             <div className="px-4 py-6">
                 <Heading title="Informasi Membership" description="berikut adalah informasi dari Membership Anda" />
-                {isActive && !member.membership && (
+                {isActive && !member.membership && !isAdmin && (
                     <div className="mb-6 p-6 rounded-3xl bg-neutral-900 border border-neutral-800 text-neutral-300 flex gap-6">
                         <div className="mt-2">
                             <MegaphoneIcon className="size-8 lg:size-12" />
@@ -94,54 +94,65 @@ export default function MembershipPage({ member }: MembershipProps) {
                     </div>
                 )}
                 <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
-                    <div className="bg-gradient-to-r from-neutral-900 to-transparent rounded-3xl">
-                        <div className="bg-gradient-to-tl from-neutral-500/10 from-[40%] to-[40%] to-transparent rounded-3xl">
-                            <div className="bg-gradient-to-bl from-neutral-500/10 from-[30%] to-[30%] to-transparent rounded-3xl border border-neutral-800 p-6 lg:p-10 space-y-2">
-                                <div className="flex justify-between gap-4">
-                                    <div>
-                                        <p className="mb-2 text-neutral-300 text-xs md:text-base">Membership Aktif :</p>
-                                        <h1 className={`mb-4 text-4xl md:text-5xl font-bold text-white`}>
-                                            {isActive ? member.membership?.name ? member.membership.name : 'Terjadi Kesalahan' : 'Free Plan'}
-                                        </h1>
-                                        <div className='mb-8 text-nowrap text-white text-3xl font-semibold'>{isActive ? member.membership?.price ? formatRupiah(member.membership?.price) : 'Terjadi Kesalahan' : 'Rp. 0'}</div>
+                    {isAdmin ? (
+                        <div className="bg-gradient-to-r from-neutral-900 to-transparent rounded-3xl">
+                            <div className="bg-gradient-to-tl from-neutral-500/10 from-[40%] to-[40%] to-transparent rounded-3xl">
+                                <div className="bg-gradient-to-bl from-neutral-500/10 from-[30%] to-[30%] to-transparent rounded-3xl border border-neutral-800 p-6 lg:p-10 space-y-2">
+                                    <div className="flex justify-between gap-4">
+                                        <div>
+                                            <p className="mb-2 text-neutral-300 text-xs md:text-base">Terdaftar sebagai :</p>
+                                            <h1 className={`mb-4 text-4xl md:text-5xl font-bold text-white`}>
+                                                Administrator
+                                            </h1>
+                                            <div className='mb-8 text-nowrap text-white text-3xl font-semibold'>Bebas Biaya</div>
+                                        </div>
+                                        <div>
+                                            <p className="mb-2 text-white md:text-xl font-bold">Permanen</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="mb-2 text-white md:text-xl font-bold">{isActive ? member.membership ? member.membership?.duration_days ? `${member.membership.duration_days} Hari` : 'Selamanya' : 'Terjadi Kesalahan' : 'Tidak Aktif'}</p>
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-2 gap-6">
-                                    <div className="space-y-1">
-                                        <p className="text-xs md:text-sm text-neutral-300">Aktif Dari :</p>
-                                        <p className="text-xs md:text-base text-white">{isActive ? member.membership_started_at ? formatDate(member.membership_started_at) : '- Tidak Aktif' : '- Tidak Aktif'}</p>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <p className="text-xs md:text-sm text-neutral-300">Aktif Sampai :</p>
-                                        <p className="text-xs md:text-base text-white">{isActive ? member.membership_expires_at ? formatDate(member.membership_expires_at) : '- Tidak Aktif' : '- Tidak Aktif'}</p>
+                                    <div className="grid grid-cols-2 gap-6">
+                                        <div className="space-y-1">
+                                            <p className="text-xs md:text-sm text-neutral-300">Aktif Dari :</p>
+                                            <p className="text-xs md:text-base text-white">Permanen</p>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-xs md:text-sm text-neutral-300">Aktif Sampai :</p>
+                                            <p className="text-xs md:text-base text-white">Permanen</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    {/* <div>
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-                            <div className="rounded-2xl border border-neutral-800 p-4 space-y-1">
-                                <p className="text-sm text-neutral-300">Masa Aktif :</p>
-                                <p className="text-lg text-white font-semibold">{isActive ? member.membership_expires_at ? countdownDays(member.membership_expires_at) : '-' : '-'}</p>
-                            </div>
-                            <div className="rounded-2xl border border-neutral-800 p-4 space-y-1">
-                                <p className="text-sm text-neutral-300">Masa Aktif :</p>
-                                <p className="text-lg text-white font-semibold">{isActive ? member.membership_expires_at ? countdownDays(member.membership_expires_at) : '-' : '-'}</p>
-                            </div>
-                            <div className="rounded-2xl border border-neutral-800 p-4 space-y-1">
-                                <p className="text-sm text-neutral-300">Masa Aktif :</p>
-                                <p className="text-lg text-white font-semibold">{isActive ? member.membership_expires_at ? countdownDays(member.membership_expires_at) : '-' : '-'}</p>
-                            </div>
-                            <div className="rounded-2xl border border-neutral-800 p-4 space-y-1">
-                                <p className="text-sm text-neutral-300">Masa Aktif :</p>
-                                <p className="text-lg text-white font-semibold">{isActive ? member.membership_expires_at ? countdownDays(member.membership_expires_at) : '-' : '-'}</p>
+                    ) : (
+                        <div className="bg-gradient-to-r from-neutral-900 to-transparent rounded-3xl">
+                            <div className="bg-gradient-to-tl from-neutral-500/10 from-[40%] to-[40%] to-transparent rounded-3xl">
+                                <div className="bg-gradient-to-bl from-neutral-500/10 from-[30%] to-[30%] to-transparent rounded-3xl border border-neutral-800 p-6 lg:p-10 space-y-2">
+                                    <div className="flex justify-between gap-4">
+                                        <div>
+                                            <p className="mb-2 text-neutral-300 text-xs md:text-base">Membership Aktif :</p>
+                                            <h1 className={`mb-4 text-4xl md:text-5xl font-bold text-white`}>
+                                                {isActive ? member.membership?.name ? member.membership.name : 'Terjadi Kesalahan' : 'Free Plan'}
+                                            </h1>
+                                            <div className='mb-8 text-nowrap text-white text-3xl font-semibold'>{isActive ? member.membership?.price ? formatRupiah(member.membership?.price) : 'Terjadi Kesalahan' : 'Rp. 0'}</div>
+                                        </div>
+                                        <div>
+                                            <p className="mb-2 text-white md:text-xl font-bold">{isActive ? member.membership ? member.membership?.duration_days ? `${member.membership.duration_days} Hari` : 'Selamanya' : 'Terjadi Kesalahan' : 'Tidak Aktif'}</p>
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-6">
+                                        <div className="space-y-1">
+                                            <p className="text-xs md:text-sm text-neutral-300">Aktif Dari :</p>
+                                            <p className="text-xs md:text-base text-white">{isActive ? member.membership_started_at ? formatDate(member.membership_started_at) : '- Tidak Aktif' : '- Tidak Aktif'}</p>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-xs md:text-sm text-neutral-300">Aktif Sampai :</p>
+                                            <p className="text-xs md:text-base text-white">{isActive ? member.membership_expires_at ? formatDate(member.membership_expires_at) : '- Tidak Aktif' : '- Tidak Aktif'}</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div> */}
+                    )}
                 </div>
             </div>
         </AppLayout>

@@ -20,6 +20,7 @@ export interface NavItem {
     href: string;
     icon?: LucideIcon | null;
     isActive?: boolean;
+    badge?: React.ReactNode;
 }
 
 export interface SharedData {
@@ -34,6 +35,7 @@ export interface SharedData {
         status?: string;
         snap_token?: string;
     }
+    unreadContactsCount: number;
     [key: string]: unknown;
 }
 
@@ -141,4 +143,32 @@ export interface UserVideoProgress {
     watched_at: string | null;
     created_at: string | null;
     updated_at: string | null;
+}
+
+export interface Contact {
+    id: number;
+    user_id: number;
+    user: User;
+    name: string;
+    email: string;
+    phone: string;
+    message: string;
+    is_read: boolean;
+    created_at: string;
+    updated_at: string | null;
+}
+
+export interface PaginationType<T> {
+    data: T[];
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    from: number;
+    to: number;
+    path: string;
+    next_page_url: string | null;
+    prev_page_url: string | null;
+    first_page_url: string;
+    last_page_url: string;
 }

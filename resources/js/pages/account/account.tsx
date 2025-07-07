@@ -5,15 +5,18 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { countdownDays, formatDateTime } from "@/helper/helper";
 import { useInitials } from "@/hooks/use-initials";
 import AppLayout from "@/layouts/app-layout";
-import { BreadcrumbItem, Role, User } from "@/types";
+import { BreadcrumbItem, PaginationType, Role, User } from "@/types";
 import { Head, useForm } from "@inertiajs/react";
 import Accountcreate from "./account-create";
 import AccountEdit from "./account-edit";
 import AccountDelete from "./account-delete";
 import AssignRoleToUser from "./account-role";
 import InputSearch from "@/components/filter/input-search";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FilterByRole } from "@/components/filter/filter-by-role";
+import { AppPagination } from "@/components/custom/app-pagination";
+import FilterDataPerPage from "@/components/filter/data-per-page";
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -23,7 +26,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 interface AccountProps {
-    users: User[];
+    users: PaginationType<User>;
     roles: Role[];
     filters: {
         search?: string;
@@ -37,24 +40,24 @@ function account({ users, roles, filters }: AccountProps) {
 
     const { data, setData, get } = useForm({
         search: filters.search || '',
-        role_id: filters.role_id || '',
-    });
+        role_id: filters.role_id && filters.role_id.toString() || '',
+        pagination: 10,
+    });    
+
+    const isFirstRender = useRef(true);
 
     useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return; // skip fetch pertama kali
+        }
+
         const delayDebounce = setTimeout(() => {
             get(route('account.index'), { preserveState: true, replace: true });
-        }, 400); // debounce waktu 400ms
-        return () => clearTimeout(delayDebounce);
-    }, [data.search, data.role_id]);
+        }, 400);
 
-    // const handleSearch = useCallback((value: string) => {
-    //     setData('search', value);
-    //     get(route('account.index'), {
-    //         preserveState: true,
-    //         replace: true,
-    //     });
-    // }, [data.search]);
-    
+        return () => clearTimeout(delayDebounce);
+    }, [data.search, data.role_id, data.pagination]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -64,22 +67,9 @@ function account({ users, roles, filters }: AccountProps) {
                 <Heading title="Manajemen Akun" description="Informasi data akun, mengelola dan mengatur hak akses." />
                 <div className="flex justify-between items-center gap-4 mb-4">
                     <Accountcreate />
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                        <Select onValueChange={(value) => setData('role_id', Number(value))} value={data.role_id?.toString() || ''}>
-                            <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Select a role" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    <SelectLabel>Roles</SelectLabel>
-                                    {roles.map((role) => (
-                                        <SelectItem key={role.id} value={role.id.toString()}>
-                                            {role.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                        <FilterDataPerPage value={data.pagination} onValueChange={(value) => setData('pagination', value)} />
+                        <FilterByRole roles={roles} value={data.role_id?.toString() || ''} onValueChange={(value) => setData('role_id', value)} />
                         <InputSearch
                             value={data.search}
                             onSearch={(value: string) => setData('search', value)}
@@ -87,16 +77,9 @@ function account({ users, roles, filters }: AccountProps) {
                             debounceDelay={0}
                         />
                     </div>
-                    {/* <input
-                        type="text"
-                        placeholder="Search user..."
-                        value={data.search}
-                        onChange={(e) => setData('search', e.target.value)}
-                        className="border px-2 py-1"
-                    /> */}
                 </div>
                 <div className="grid grid-cols-1">
-                    <ScrollArea>
+                    <ScrollArea className="pb-2">
                         <ScrollBar orientation="horizontal" />
                             <Table>
                                 <TableHeader>
@@ -115,7 +98,7 @@ function account({ users, roles, filters }: AccountProps) {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {users.map((user, index) => (
+                                    {users.data && users.data.length > 0 ? users.data.map((user, index) => (
                                         <TableRow key={user.id}>
                                             <TableCell className="text-center">{index + 1}</TableCell>
                                             <TableCell className="font-medium flex items-center gap-2">
@@ -152,10 +135,17 @@ function account({ users, roles, filters }: AccountProps) {
                                                 </div>
                                             </TableCell>
                                         </TableRow>
-                                    ))}
+                                    )) : (
+                                        <TableRow>
+                                            <TableCell colSpan={11}>
+                                                Data Tidak Ditemukan.
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
                                 </TableBody>
                             </Table>
                     </ScrollArea>
+                    {users.data.length > 0 && <AppPagination item={users} query={data} />}
                 </div>
             </div>
         </AppLayout>

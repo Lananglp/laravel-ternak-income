@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Contact;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -63,6 +64,9 @@ class HandleInertiaRequests extends Middleware
                 'error' => fn () => $request->session()->get('error'),
                 'snap_token' => fn () => $request->session()->get('snap_token'),
             ],
+            'unreadContactsCount' => fn () => auth()->check() && auth()->user()->role->slug === 'admin'
+                ? Contact::where('is_read', false)->count()
+                : 0,
         ];
     }
 }

@@ -13,7 +13,7 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () { 
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     // private !auth
     Route::get('/files/{filepath}', [FileController::class, 'show'])->where('filepath', '.*')->name('files.show');
@@ -31,3 +31,4 @@ require __DIR__.'/role.php';
 require __DIR__.'/module.php';
 require __DIR__.'/membership.php';
 require __DIR__.'/transaction.php';
+require __DIR__.'/contact.php';

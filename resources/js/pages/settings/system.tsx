@@ -14,7 +14,7 @@ import { PiEyeBold, PiEyeClosedBold } from "react-icons/pi";
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'System settings',
+        title: 'Pengaturan Sistem',
         href: '/settings/system',
     },
 ];
@@ -52,11 +52,11 @@ export default function SystemPage({ systemConfig }: SystemPageProps) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="System settings" />
+            <Head title="Pengaturan Sistem" />
 
             <SettingsLayout>
                 <div className="space-y-6">
-                    <HeadingSmall title="System settings" description="Configure your app system settings" />
+                    <HeadingSmall title="Pengaturan Sistem" description="Konfigurasikan pengaturan sistem aplikasi Anda" />
 
                     <form onSubmit={submit} className="space-y-6">
                         <div className="grid gap-2">
@@ -80,7 +80,7 @@ export default function SystemPage({ systemConfig }: SystemPageProps) {
                         </div>
 
                         <div className="flex items-center gap-4">
-                            <Button disabled={processing}>Save</Button>
+                            <Button disabled={processing}>Simpan Perubahan</Button>
 
                             <Transition
                                 show={recentlySuccessful}
@@ -89,7 +89,7 @@ export default function SystemPage({ systemConfig }: SystemPageProps) {
                                 leave="transition ease-in-out"
                                 leaveTo="opacity-0"
                             >
-                                <p className="text-sm text-neutral-600">Saved</p>
+                                <p className="text-sm text-neutral-600">Tersimpan</p>
                             </Transition>
                         </div>
                     </form>

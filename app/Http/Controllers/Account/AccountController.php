@@ -18,18 +18,25 @@ class AccountController extends Controller
 {
     public function index(Request $request): Response
     {
+        $pagination = $request->integer('pagination', 10); // default 10
+
         $query = User::with(['role', 'membership'])->latest();
 
-        if ($request->has('search') && $request->search !== null) {
-            $query->where('name', 'like', '%' . $request->search . '%')
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
                 ->orWhere('email', 'like', '%' . $request->search . '%');
+            });
         }
 
-        if ($request->has('role_id') && $request->role_id !== null) {
+        if ($request->filled('role_id')) {
             $query->where('role_id', $request->role_id);
         }
 
-        $users = $query->get()->makeHidden(['password', 'remember_token', 'email_verified_at']);
+        $users = $query->paginate($pagination)
+            ->withQueryString()
+            ->through(fn($user) => $user->makeHidden(['password', 'remember_token', 'email_verified_at']));
+
         $roles = Role::all();
 
         return Inertia::render('account/account', [
@@ -38,6 +45,7 @@ class AccountController extends Controller
             'filters' => [
                 'search' => $request->search,
                 'role_id' => $request->role_id,
+                'pagination' => $pagination
             ]
         ]);
     }

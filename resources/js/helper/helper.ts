@@ -1,12 +1,31 @@
-import moment from "moment";
+import { format } from 'date-fns';
+import { id, enUS } from 'date-fns/locale';
+
+/**
+ * Fungsi untuk menentukan locale berdasarkan kode bahasa
+ * @param lang 'id' untuk Bahasa Indonesia, 'en' untuk English
+ */
+const getLocale = (lang: 'id' | 'en') => {
+    switch (lang) {
+        case 'en':
+            return enUS;
+        case 'id':
+        default:
+            return id;
+    }
+};
 
 export const formatDateTime = (date: string) => {
-    return moment(date).locale('en').format('dddd, DD MMMM YYYY HH:mm');
-}
+    return format(new Date(date), "EEEE, dd MMMM yyyy HH:mm", {
+        locale: getLocale('id'),
+    });
+};
 
 export const formatDate = (date: string) => {
-    return moment(date).locale('en').format('dddd, DD MMMM YYYY');
-}
+    return format(new Date(date), "EEEE, dd MMMM yyyy", {
+        locale: getLocale('id'),
+    });
+};
 
 export function formatRupiah(value: number): string {
     if (isNaN(value)) return "Rp. 0";

@@ -80,8 +80,13 @@
 }
 
 :root {
+    /* custom */
     /* --plyr-color-main: oklch(0.556 0 0); */
     --plyr-color-main: oklch(0.627 0.265 303.9);
+    --scrollbar-track: #f1f5f9; /* slate-100 */
+    --scrollbar-thumb: #94a3b8; /* slate-400 */
+    --scrollbar-thumb-hover: #64748b; /* slate-500 */
+    /* orignal */
     --background: oklch(1 0 0);
     --foreground: oklch(0.145 0 0);
     --card: oklch(1 0 0);
@@ -118,6 +123,11 @@
 }
 
 .dark {
+    /* custom */
+    --scrollbar-track: oklch(0.205 0 0); /* slate-800 */
+    --scrollbar-thumb: oklch(0.439 0 0); /* slate-600 */
+    --scrollbar-thumb-hover: oklch(0.985 0 0); /* slate-500 */
+    /* orignal */
     --background: oklch(0.145 0 0);
     --foreground: oklch(0.985 0 0);
     --card: oklch(0.145 0 0);
@@ -152,18 +162,46 @@
     --sidebar-ring: oklch(0.439 0 0);
 }
 
+
 @layer base {
     * {
         @apply border-border;
     }
-
+    
     body {
         @apply bg-background text-foreground;
     }
-
+    
     .font-righteous {
         font-family: "Righteous", sans-serif;
         font-weight: 400;
         font-style: normal;
+    }
+
+    ::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--scrollbar-track);
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--scrollbar-thumb);
+        border-radius: 10px;
+        border: 2px solid var(--scrollbar-track);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--scrollbar-thumb-hover);
+    }
+
+    /* Styling untuk Firefox */
+    /* Cukup atur warna dan lebar dasar */
+    html {
+        scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+        scrollbar-width: thin;
     }
 }

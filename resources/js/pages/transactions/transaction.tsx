@@ -31,7 +31,7 @@ function RolesPage({ transactions }: RoleProps) {
                 <Heading title="History Pembayaran" description="List data history pembayaran" />
                 {/* <Rolecreate /> */}
                 <div className="grid grid-cols-1">
-                    <ScrollArea>
+                    <ScrollArea className="pb-2">
                         <ScrollBar orientation="horizontal" />
                         <Table>
                             <TableHeader>
