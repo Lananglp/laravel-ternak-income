@@ -134,8 +134,8 @@ const ModuleSection = ({
                     </div>
                     <div className='col-span-12 md:col-span-7 text-zinc-400 space-y-2 px-4'>
                         {/* <div className='text-nowrap text-purple-500 font-semibold'>{lessons} Video</div> */}
-                        <h6 className='text-lg font-medium leading-tight text-white'>{title}</h6>
-                        <p className='text-sm line-clamp-2'>{description}</p>
+                        <h6 className='text-2xl md:text-xl font-medium leading-tight text-white'>{title}</h6>
+                        <p className='line-clamp-2'>{description}</p>
                         {/* <p className='text-sm text-nowrap'>{module.videos ? module.videos.length : 0} Video dalam {formatDuration(totalDuration)}</p> */}
                     </div>
                 </div>
@@ -267,7 +267,7 @@ export default function Modules({ modules } : Props) {
                         </div>
                     </div>
                 )}
-                <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4'>
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
                     {modules && modules.length > 0 ? (
                         <DndContext
                             sensors={sensors}

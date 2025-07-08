@@ -13,6 +13,7 @@ use Inertia\Response;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\SystemConfig;
+use App\Models\Membership;
 
 class AccountController extends Controller
 {
@@ -38,10 +39,12 @@ class AccountController extends Controller
             ->through(fn($user) => $user->makeHidden(['password', 'remember_token', 'email_verified_at']));
 
         $roles = Role::all();
+        $memberships = Membership::orderBy('position')->get();
 
         return Inertia::render('account/account', [
             'users' => $users,
             'roles' => $roles,
+            'memberships' => $memberships,
             'filters' => [
                 'search' => $request->search,
                 'role_id' => $request->role_id,
@@ -135,6 +138,31 @@ class AccountController extends Controller
         $user->save();
 
         return back()->with('success', 'Successfully updated user role.');
+    }
+
+    public function setMember(Request $request, User $user)
+    {
+        $request->validate([
+            'membership_id' => 'nullable|exists:memberships,id',
+        ]);
+
+        $membershipId = $request->membership_id;
+
+        if (!$membershipId) {
+            return redirect()->back()->with('error', 'ID Membership tidak ditemukan.');
+        }
+
+        $membership = Membership::findOrFail($membershipId);
+
+        $user->membership_id = $membership->id;
+        $user->membership_started_at = now();
+        $user->membership_expires_at = $membership->duration_days
+            ? now()->addDays($membership->duration_days)
+            : null;
+
+        $user->save();
+
+        return redirect()->back()->with('success', $user->name . ' telah diaktifkan menjadi member' . ($membershipId ? ' ' . $membership->name : '') . '.');
     }
 
     private function generateUsername(string $name): string

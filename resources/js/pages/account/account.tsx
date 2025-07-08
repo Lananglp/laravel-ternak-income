@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { countdownDays, formatDateTime } from "@/helper/helper";
 import { useInitials } from "@/hooks/use-initials";
 import AppLayout from "@/layouts/app-layout";
-import { BreadcrumbItem, PaginationType, Role, User } from "@/types";
+import { BreadcrumbItem, Membership, PaginationType, Role, User } from "@/types";
 import { Head, useForm } from "@inertiajs/react";
 import Accountcreate from "./account-create";
 import AccountEdit from "./account-edit";
@@ -17,6 +17,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { FilterByRole } from "@/components/filter/filter-by-role";
 import { AppPagination } from "@/components/custom/app-pagination";
 import FilterDataPerPage from "@/components/filter/data-per-page";
+import SetUserToMember from "./account-set-member";
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -28,13 +29,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 interface AccountProps {
     users: PaginationType<User>;
     roles: Role[];
+    memberships: Membership[];
     filters: {
         search?: string;
         role_id?: number;
     }
 }
 
-function account({ users, roles, filters }: AccountProps) {
+function account({ users, roles, memberships, filters }: AccountProps) {
 
     const getInitials = useInitials();
 
@@ -43,7 +45,6 @@ function account({ users, roles, filters }: AccountProps) {
         role_id: filters.role_id && filters.role_id.toString() || '',
         pagination: 10,
     });    
-
     const isFirstRender = useRef(true);
 
     useEffect(() => {
@@ -98,44 +99,49 @@ function account({ users, roles, filters }: AccountProps) {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {users.data && users.data.length > 0 ? users.data.map((user, index) => (
-                                        <TableRow key={user.id}>
-                                            <TableCell className="text-center">{index + 1}</TableCell>
-                                            <TableCell className="font-medium flex items-center gap-2">
-                                                <Avatar className="h-8 w-8 overflow-hidden rounded-full">
-                                                    <AvatarImage src={user.avatar} alt={user.name} />
-                                                    <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
-                                                        {getInitials(user.name)}
-                                                    </AvatarFallback>
-                                                </Avatar>
-                                                <p>{user.name}</p>
-                                            </TableCell>
-                                            <TableCell>{user.email}</TableCell>
-                                            <TableCell>{user.username}</TableCell>
-                                            <TableCell className="text-center">
-                                                {user.membership_expires_at && new Date(user.membership_expires_at) > new Date()
-                                                    ? user.membership?.name ?? '-'
-                                                    : '-'}
-                                            </TableCell>
+                                    {users.data && users.data.length > 0 ? users.data.map((user, index) => {
+                                        const now = new Date();
+                                        const isAdmin = user.role?.slug === 'admin';
+                                        const isMembershipActive = isAdmin || (user.membership_expires_at ? new Date(user.membership_expires_at) > now : false);
+                                        return (
+                                            <TableRow key={user.id}>
+                                                <TableCell className="text-center">{index + 1}</TableCell>
+                                                <TableCell className="font-medium flex items-center gap-2">
+                                                    <Avatar className="h-8 w-8 overflow-hidden rounded-full">
+                                                        <AvatarImage src={user.avatar} alt={user.name} />
+                                                        <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
+                                                            {getInitials(user.name)}
+                                                        </AvatarFallback>
+                                                    </Avatar>
+                                                    <p>{user.name}</p>
+                                                </TableCell>
+                                                <TableCell>{user.email}</TableCell>
+                                                <TableCell>{user.username}</TableCell>
+                                                <TableCell className="text-center">
+                                                    {user.membership_expires_at && new Date(user.membership_expires_at) > new Date()
+                                                        ? user.membership?.name ?? '-'
+                                                        : '-'}
+                                                </TableCell>
 
-                                            <TableCell className="text-center">
-                                                {user.membership_expires_at && new Date(user.membership_expires_at) > new Date()
-                                                    ? countdownDays(user.membership_expires_at)
-                                                    : '-'}
-                                            </TableCell>
-                                            <TableCell className="text-center">{user.role?.name ? user.role.name : '-'}</TableCell>
-                                            <TableCell className={`text-center ${user.provider === 'none' ? 'text-neutral-500' : ''}`}>{user.provider}</TableCell>
-                                            <TableCell className="text-neutral-500">{formatDateTime(user.created_at)}</TableCell>
-                                            <TableCell className="text-neutral-500">{user.created_at !== user.updated_at ? formatDateTime(user.updated_at) : '-'}</TableCell>
-                                            <TableCell>
-                                                <div className="text-center flex items-center justify-center gap-1">
-                                                    <AssignRoleToUser user={user} roles={roles} />
-                                                    <AccountEdit user={user} />
-                                                    <AccountDelete user={user} />
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    )) : (
+                                                <TableCell className="text-center">
+                                                    {user.membership_expires_at && new Date(user.membership_expires_at) > new Date()
+                                                        ? countdownDays(user.membership_expires_at)
+                                                        : '-'}
+                                                </TableCell>
+                                                <TableCell className="text-center">{user.role?.name ? user.role.name : '-'}</TableCell>
+                                                <TableCell className={`text-center ${user.provider === 'none' ? 'text-neutral-500' : ''}`}>{user.provider}</TableCell>
+                                                <TableCell className="text-neutral-500">{formatDateTime(user.created_at)}</TableCell>
+                                                <TableCell className="text-neutral-500">{user.created_at !== user.updated_at ? formatDateTime(user.updated_at) : '-'}</TableCell>
+                                                <TableCell>
+                                                    <div className="text-center flex items-center justify-center gap-1">
+                                                        {!isAdmin && <SetUserToMember user={user} memberships={memberships} isActive={isMembershipActive} />}
+                                                        <AssignRoleToUser user={user} roles={roles} />
+                                                        <AccountEdit user={user} />
+                                                        <AccountDelete user={user} />
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                    )}) : (
                                         <TableRow>
                                             <TableCell colSpan={11}>
                                                 Data Tidak Ditemukan.

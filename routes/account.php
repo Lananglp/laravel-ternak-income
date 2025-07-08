@@ -9,5 +9,6 @@ Route::middleware('auth')->group(function () {
         Route::put('accounts/{user}', [AccountController::class, 'update'])->name('account.update');
         Route::delete('accounts/{user}', [AccountController::class, 'destroy'])->name('account.destroy');
         Route::put('/users/{user}/set-role', [AccountController::class, 'setRole'])->name('account.set-role');
+        Route::put('/users/{user}/set-member', [AccountController::class, 'setMember'])->name('account.set-member');
     });
 });
