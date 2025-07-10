@@ -124,15 +124,15 @@ export default function ContactUsPage({ user }: { user: User }) {
                 <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-8 space-y-2">
                     <div className="flex items-center gap-3 text-neutral-300">
                         <MapPinIcon className="h-5 w-5" />
-                        <p>Jl. Contoh No.123, Denpasar, Bali</p>
+                        <p>Denpasar, Bali</p>
                     </div>
                     <div className="flex items-center gap-3 text-neutral-300">
                         <MailIcon className="h-5 w-5" />
-                        <p>support@namadomainanda.com</p>
+                        <p>ternakincomebusiness@gmail.com</p>
                     </div>
                     <div className="flex items-center gap-3 text-neutral-300">
                         <PhoneIcon className="h-5 w-5" />
-                        <p>+62 812-3456-7890 ( Whatsapp )</p>
+                        <p>+62 821-2142-4298 ( Whatsapp )</p>
                     </div>
                     <p className="mt-6 text-neutral-300">Kami biasanya merespons dalam 1x24 jam pada hari kerja.</p>
                 </div>
