@@ -64,9 +64,13 @@ class HandleInertiaRequests extends Middleware
                 'error' => fn () => $request->session()->get('error'),
                 'snap_token' => fn () => $request->session()->get('snap_token'),
             ],
-            'unreadContactsCount' => fn () => auth()->check() && auth()->user()->role->slug === 'admin'
-                ? Contact::where('is_read', false)->count()
-                : 0,
+            // 'unreadContactsCount' => fn () => auth()->check() && auth()->user()->role->slug === 'admin'
+            //     ? Contact::where('is_read', false)->count()
+            //     : 0,
+            'unreadContactsCount' => fn () =>
+                auth()->check() && auth()->user()->role && auth()->user()->role->slug === 'admin'
+                    ? Contact::where('is_read', false)->count()
+                    : 0,
         ];
     }
 }

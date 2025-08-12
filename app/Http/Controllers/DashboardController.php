@@ -14,8 +14,9 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = Auth::user()->load('role');
-        $isAdmin = Auth::user()->role->slug === 'admin';
+        $user = Auth::user();
+        $user && $user->relationLoaded('role') ?: $user->load('role');
+        $isAdmin = $user && $user->role && $user->role->slug === 'admin';
 
         if (!$isAdmin) {
             return to_route('module.index');
