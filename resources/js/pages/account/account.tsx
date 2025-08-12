@@ -36,7 +36,7 @@ interface AccountProps {
     }
 }
 
-function account({ users, roles, memberships, filters }: AccountProps) {
+function Account({ users, roles, memberships, filters }: AccountProps) {
 
     const getInitials = useInitials();
 
@@ -44,7 +44,7 @@ function account({ users, roles, memberships, filters }: AccountProps) {
         search: filters.search || '',
         role_id: filters.role_id && filters.role_id.toString() || '',
         pagination: 10,
-    });    
+    });
     const isFirstRender = useRef(true);
 
     useEffect(() => {
@@ -82,74 +82,75 @@ function account({ users, roles, memberships, filters }: AccountProps) {
                 <div className="grid grid-cols-1">
                     <ScrollArea className="pb-2">
                         <ScrollBar orientation="horizontal" />
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="text-center">No</TableHead>
-                                        <TableHead className="w-[100px]">Name</TableHead>
-                                        <TableHead>Email</TableHead>
-                                        <TableHead>Username</TableHead>
-                                        <TableHead className="text-center">Membership</TableHead>
-                                        <TableHead className="text-center">Berakhir pada</TableHead>
-                                        <TableHead className="text-center">Role</TableHead>
-                                        <TableHead className="text-center">Provider</TableHead>
-                                        <TableHead>Created At</TableHead>
-                                        <TableHead>Changed At</TableHead>
-                                        <TableHead>Options</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {users.data && users.data.length > 0 ? users.data.map((user, index) => {
-                                        const now = new Date();
-                                        const isAdmin = user.role?.slug === 'admin';
-                                        const isMembershipActive = isAdmin || (user.membership_expires_at ? new Date(user.membership_expires_at) > now : false);
-                                        return (
-                                            <TableRow key={user.id}>
-                                                <TableCell className="text-center">{index + 1}</TableCell>
-                                                <TableCell className="font-medium flex items-center gap-2">
-                                                    <Avatar className="h-8 w-8 overflow-hidden rounded-full">
-                                                        <AvatarImage src={user.avatar} alt={user.name} />
-                                                        <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
-                                                            {getInitials(user.name)}
-                                                        </AvatarFallback>
-                                                    </Avatar>
-                                                    <p>{user.name}</p>
-                                                </TableCell>
-                                                <TableCell>{user.email}</TableCell>
-                                                <TableCell>{user.username}</TableCell>
-                                                <TableCell className="text-center">
-                                                    {user.membership_expires_at && new Date(user.membership_expires_at) > new Date()
-                                                        ? user.membership?.name ?? '-'
-                                                        : '-'}
-                                                </TableCell>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="text-center">No</TableHead>
+                                    <TableHead className="w-[100px]">Name</TableHead>
+                                    <TableHead>Email</TableHead>
+                                    <TableHead>Username</TableHead>
+                                    <TableHead className="text-center">Membership</TableHead>
+                                    <TableHead className="text-center">Berakhir pada</TableHead>
+                                    <TableHead className="text-center">Role</TableHead>
+                                    <TableHead className="text-center">Provider</TableHead>
+                                    <TableHead>Created At</TableHead>
+                                    <TableHead>Changed At</TableHead>
+                                    <TableHead>Options</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {users.data && users.data.length > 0 ? users.data.map((user, index) => {
+                                    const now = new Date();
+                                    const isAdmin = user.role?.slug === 'admin';
+                                    const isMembershipActive = isAdmin || (user.membership_expires_at ? new Date(user.membership_expires_at) > now : false);
+                                    return (
+                                        <TableRow key={user.id}>
+                                            <TableCell className="text-center">{index + 1}</TableCell>
+                                            <TableCell className="font-medium flex items-center gap-2">
+                                                <Avatar className="h-8 w-8 overflow-hidden rounded-full">
+                                                    <AvatarImage src={user.avatar} alt={user.name} />
+                                                    <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
+                                                        {getInitials(user.name)}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                <p>{user.name}</p>
+                                            </TableCell>
+                                            <TableCell>{user.email}</TableCell>
+                                            <TableCell>{user.username}</TableCell>
+                                            <TableCell className="text-center">
+                                                {user.membership_expires_at && new Date(user.membership_expires_at) > new Date()
+                                                    ? user.membership?.name ?? '-'
+                                                    : '-'}
+                                            </TableCell>
 
-                                                <TableCell className="text-center">
-                                                    {user.membership_expires_at && new Date(user.membership_expires_at) > new Date()
-                                                        ? countdownDays(user.membership_expires_at)
-                                                        : '-'}
-                                                </TableCell>
-                                                <TableCell className="text-center">{user.role?.name ? user.role.name : '-'}</TableCell>
-                                                <TableCell className={`text-center ${user.provider === 'none' ? 'text-neutral-500' : ''}`}>{user.provider}</TableCell>
-                                                <TableCell className="text-neutral-500">{formatDateTime(user.created_at)}</TableCell>
-                                                <TableCell className="text-neutral-500">{user.created_at !== user.updated_at ? formatDateTime(user.updated_at) : '-'}</TableCell>
-                                                <TableCell>
-                                                    <div className="text-center flex items-center justify-center gap-1">
-                                                        {!isAdmin && <SetUserToMember user={user} memberships={memberships} isActive={isMembershipActive} />}
-                                                        <AssignRoleToUser user={user} roles={roles} />
-                                                        <AccountEdit user={user} />
-                                                        <AccountDelete user={user} />
-                                                    </div>
-                                                </TableCell>
-                                            </TableRow>
-                                    )}) : (
-                                        <TableRow>
-                                            <TableCell colSpan={11}>
-                                                Data Tidak Ditemukan.
+                                            <TableCell className="text-center">
+                                                {user.membership_expires_at && new Date(user.membership_expires_at) > new Date()
+                                                    ? countdownDays(user.membership_expires_at)
+                                                    : '-'}
+                                            </TableCell>
+                                            <TableCell className="text-center">{user.role?.name ? user.role.name : '-'}</TableCell>
+                                            <TableCell className={`text-center ${user.provider === 'none' ? 'text-neutral-500' : ''}`}>{user.provider}</TableCell>
+                                            <TableCell className="text-neutral-500">{formatDateTime(user.created_at)}</TableCell>
+                                            <TableCell className="text-neutral-500">{user.created_at !== user.updated_at ? formatDateTime(user.updated_at) : '-'}</TableCell>
+                                            <TableCell>
+                                                <div className="text-center flex items-center justify-center gap-1">
+                                                    {!isAdmin && <SetUserToMember user={user} memberships={memberships} isActive={isMembershipActive} />}
+                                                    <AssignRoleToUser user={user} roles={roles} />
+                                                    <AccountEdit user={user} />
+                                                    <AccountDelete user={user} />
+                                                </div>
                                             </TableCell>
                                         </TableRow>
-                                    )}
-                                </TableBody>
-                            </Table>
+                                    )
+                                }) : (
+                                    <TableRow>
+                                        <TableCell colSpan={11}>
+                                            Data Tidak Ditemukan.
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
                     </ScrollArea>
                     {users.data.length > 0 && <AppPagination item={users} query={data} />}
                 </div>
@@ -158,4 +159,4 @@ function account({ users, roles, memberships, filters }: AccountProps) {
     )
 }
 
-export default account
+export default Account

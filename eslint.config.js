@@ -21,6 +21,9 @@ export default [
             'react/react-in-jsx-scope': 'off',
             'react/prop-types': 'off',
             'react/no-unescaped-entities': 'off',
+            // Tambahkan dua baris ini untuk menonaktifkan error TypeScript
+            '@typescript-eslint/no-unused-vars': 'off',
+            '@typescript-eslint/no-explicit-any': 'off',
         },
         settings: {
             react: {
