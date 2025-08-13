@@ -149,6 +149,7 @@ export default function ModuleShow({ module, totalDuration, moduleProgressPercen
 
     const [items, setItems] = useState(module.videos && module.videos.map((m) => m.id));
     const [activeId, setActiveId] = useState<number | null>(null);
+    const isAdmin = auth.user.role?.slug === 'admin';
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -213,11 +214,11 @@ export default function ModuleShow({ module, totalDuration, moduleProgressPercen
                     <div className='absolute inset-x-0 top-0'>
                         <div className='flex justify-between items-center gap-2'>
                             <Button variant='ghost' onClick={() => router.visit(`/modules`)}><MoveLeftIcon /> Kembali</Button>
-                            <Button variant='outline' onClick={() => router.visit(`/modules/${module.slug}/create`)}><PlusIcon /> Tambahkan Video</Button>
+                            {isAdmin && <Button variant='outline' onClick={() => router.visit(`/modules/${module.slug}/create`)}><PlusIcon /> Tambahkan Video</Button>}
                         </div>
                     </div>
                 </div>
-                
+
 
                 <div>
                     <div className="max-w-3xl mx-auto grid grid-cols-1 gap-4">

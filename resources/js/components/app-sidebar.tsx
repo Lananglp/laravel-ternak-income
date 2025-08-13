@@ -17,7 +17,7 @@ export function AppSidebar() {
     const isUser = auth.user.role?.slug === 'user';
 
     const mainNavItems: NavItem[] = [
-        ...(isAdmin ? 
+        ...(isAdmin ?
             [
                 {
                     title: 'Dashboard',
@@ -35,7 +35,7 @@ export function AppSidebar() {
             href: '/membership',
             icon: CrownIcon,
         },
-        ...(isAdmin ? 
+        ...(isAdmin ?
             [
                 {
                     title: 'Pembayaran',
@@ -58,7 +58,7 @@ export function AppSidebar() {
                     icon: MailIcon,
                     badge:
                         unreadContactsCount > 0 ? (
-                            <span className='inline-block text-xs bg-red-800 text-white rounded h-4 px-1 min-w-4 ms-1'>1</span>
+                            <span className='inline-block text-xs bg-red-800 text-white rounded h-4 px-1 min-w-4 ms-1'>{unreadContactsCount}</span>
                         ) : null,
                 },
             ] : []),

@@ -92,6 +92,7 @@ const MessageDialog = ({ name, message, contactId, isRead }: MessageDialogProps)
                 only: ['contacts'], // hanya refresh bagian props contacts
                 onSuccess: () => {
                     setAlreadyMarked(true);
+                    router.reload({ only: ['unreadContactsCount'] });
                 },
             });
         }
