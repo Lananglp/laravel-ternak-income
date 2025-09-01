@@ -1,14 +1,16 @@
 import Heading from '@/components/heading'
 import AppLayout from '@/layouts/app-layout'
-import { Module, SharedData, UserVideoProgress, type BreadcrumbItem } from '@/types'
+import { Module, ModuleVideo, SharedData, UserVideoProgress, type BreadcrumbItem } from '@/types'
 import { Head, Link, router, usePage } from '@inertiajs/react'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { ClapperboardIcon, ClockIcon, GripHorizontal, GripVertical, ImageOffIcon, MoveLeftIcon, PlusIcon } from 'lucide-react'
+import { ClapperboardIcon, ClockIcon, GripHorizontal, GripVertical, ImageOffIcon, MoveLeftIcon, PenIcon, PlusIcon, TrashIcon } from 'lucide-react'
 import { formatDuration, formatDurationText } from '@/helper/helper'
 import { closestCenter, DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities';
+import ModuleVideoEdit from './module_video/module-video-edit'
+import ModuleVideoDelete from './module_video/module-video-delete'
 
 const OutlineSection = ({ children, className }: { children: React.ReactNode; className?: string; bgColor?: string | null }) => {
     return (
@@ -25,6 +27,8 @@ const OutlineSection = ({ children, className }: { children: React.ReactNode; cl
 }
 
 interface SectionProps {
+    slug: string;
+    moduleVideo: ModuleVideo;
     role: string | undefined;
     id: number;
     title: string;
@@ -38,6 +42,8 @@ interface SectionProps {
 }
 
 const ModuleVideoSection = ({
+    slug,
+    moduleVideo,
     role,
     id,
     title,
@@ -74,16 +80,18 @@ const ModuleVideoSection = ({
         <div ref={setNodeRef} style={style}>
             <OutlineSection className={`relative overflow-hidden group/card border ${isOverItem ? 'border-dashed border-neutral-500' : 'border-transparent'} flex items-center p-3`}>
                 <div className='flex justify-between items-center gap-4'>
-                    <Button
-                        {...attributes}
-                        {...listeners}
-                        variant={'transparent'}
-                        size={'iconXs'}
-                        title="Geser untuk ubah urutan"
-                        className='text-neutral-300 hover:text-white'
-                    >
-                        <GripVertical className="w-5 h-5" />
-                    </Button>
+                    {role === "admin" &&
+                        <Button
+                            {...attributes}
+                            {...listeners}
+                            variant={'transparent'}
+                            size={'iconXs'}
+                            title="Geser untuk ubah urutan"
+                            className='text-neutral-300 hover:text-white'
+                        >
+                            <GripVertical className="w-5 h-5" />
+                        </Button>
+                    }
                     {/* <div className='flex items-center gap-1'>
                         <ModuleEdit module={module} />
                         <ModuleDelete module={module} />
@@ -120,11 +128,21 @@ const ModuleVideoSection = ({
                         </>
                     )}
                 </Link>
-                <div className='basis-full text-zinc-400 space-y-2 px-2 lg:px-4'>
-                    <Link href={link} className='inline-block lg:text-lg font-medium leading-tight text-white line-clamp-4 lg:line-clamp-2'>{title}</Link>
-                    <Link href={link} className='hidden lg:block'>
-                        <p className='text-sm line-clamp-2'>{description}</p>
-                    </Link>
+                <div className={`basis-full space-y-2 ${role === "admin" ? 'h-full' : ''}`}>
+                    {role === "admin" &&
+                        <div className='flex justify-end items-center gap-1.5'>
+                            <ModuleVideoEdit slug={slug} videos={moduleVideo} />
+                            <ModuleVideoDelete slug={slug} videos={moduleVideo} />
+                        </div>
+                    }
+                    <div className={`flex-grow text-zinc-400 space-y-2 ps-2 lg:ps-4`}>
+                        <Link href={link} className='block lg:text-lg font-medium leading-tight text-white'>
+                            <h6 className='line-clamp-5 lg:line-clamp-2 text-sm sm:text-base'>{title}</h6>
+                        </Link>
+                        <Link href={link} className='hidden lg:block'>
+                            <p className='text-sm line-clamp-2'>{description}</p>
+                        </Link>
+                    </div>
                 </div>
             </OutlineSection>
         </div>
@@ -263,7 +281,7 @@ export default function ModuleShow({ module, totalDuration, moduleProgressPercen
 
                                         return (
                                             <ModuleVideoSection
-                                                key={id}
+                                                key={videos.id}
                                                 role={auth.user.role?.slug}
                                                 id={videos.id}
                                                 title={videos.title}
@@ -274,6 +292,8 @@ export default function ModuleShow({ module, totalDuration, moduleProgressPercen
                                                 isCompleted={isCompleted}
                                                 progress={progress}
                                                 percentage={percentage}
+                                                moduleVideo={videos}
+                                                slug={module.slug}
                                             />
                                         );
                                     })}

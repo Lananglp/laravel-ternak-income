@@ -26,6 +26,8 @@ Route::middleware('auth')->group(function () {
 
             Route::get('/{slug}/create', [ModuleVideoController::class, 'create'])->name('module.video.create');
             Route::post('/{slug}/create', [ModuleVideoController::class, 'store'])->name('module.video.store');
+            Route::post('/{slug}/edit/{id}', [ModuleVideoController::class, 'update'])->name('module.video.update');
+            Route::delete('/{slug}/delete/{id}', [ModuleVideoController::class, 'destroy'])->name('module.video.destroy');
         });
     });
 });

@@ -15,10 +15,11 @@ createInertiaApp({
 
         root.render(<App {...props} />);
     },
-    progress: {
-        // color: '#ff6900', // warna orange 500
-        color: '#737373', // warna neutral 500
-    },
+    progress: false
+    // progress: {
+    //     // color: '#ff6900', // warna orange 500
+    //     color: '#737373', // warna neutral 500
+    // },
 });
 
 // This will set light / dark mode on load...

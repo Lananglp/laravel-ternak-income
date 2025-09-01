@@ -86,66 +86,92 @@ class ModuleVideoController extends Controller
     {
         $module = Module::where('slug', $slug)->firstOrFail();
 
-        if (!$module) {
-            return redirect()->back()->with('error', 'Modul tidak ditemukan, pastikan modul tersedia.');
-        }
-
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'thumbnail' => 'required|image|mimes:jpg,jpeg,png|max:2048', // max 2MB
-            'video' => 'required|file|mimes:mp4,mov,webm,avi,mkv|max:512000', // max 500MB
+            'thumbnail' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'video' => 'required|file|mimes:mp4,mov,webm,avi,mkv|max:512000',
+            'duration' => 'required|integer|min:1', // 🔹 durasi dari frontend
         ]);
 
-        // 🔹 Simpan thumbnail
+        // Simpan thumbnail
         $thumbnail = $request->file('thumbnail');
-        $image = Image::read($thumbnail)->orient();
-
-        // Rasio 16:9 check
-        $width = $image->width();
-        $height = $image->height();
-        $ratio = $width / $height;
-        $expected = 16 / 9;
-        if (abs($ratio - $expected) > 0.5) {
-            return redirect()->back()->withErrors(['thumbnail' => 'Thumbnail harus memiliki rasio 16:9.']);
-        }
-
-        $resized = $image
-            ->resize(1280, 720, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            })
-            ->toWebp(70);
-
-        $thumbnailFilename = Str::uuid() . '.webp';
+        $thumbnailFilename = Str::uuid() . '.' . $thumbnail->getClientOriginalExtension();
         $thumbnailPath = "modules/videos/thumbnails/{$thumbnailFilename}";
-        Storage::disk($this->disk)->put($thumbnailPath, (string) $resized);
+        Storage::disk($this->disk)->putFileAs('modules/videos/thumbnails', $thumbnail, $thumbnailFilename);
 
-        // 🔹 Simpan video
+        // Simpan video
         $video = $request->file('video');
         $videoFilename = Str::uuid() . '.' . $video->getClientOriginalExtension();
         $videoPath = "modules/videos/files/{$videoFilename}";
         Storage::disk($this->disk)->putFileAs('modules/videos/files', $video, $videoFilename);
 
-        // 🔹 Hitung durasi video dengan FFMpeg
-        $ffmpeg = FFMpeg::create();
-        $videoFFM = $ffmpeg->open(Storage::disk($this->disk)->path($videoPath));
-        $ffprobe = \FFMpeg\FFProbe::create();
-        $duration = (int) $ffprobe
-            ->format(Storage::disk($this->disk)->path($videoPath))
-            ->get('duration');
-
-        // 🔹 Simpan ke database
+        // Simpan ke database
         ModuleVideo::create([
             'module_id' => $module->id,
             'title' => $data['title'],
             'description' => $data['description'],
             'thumbnail' => $thumbnailPath,
             'video_url' => $videoPath,
-            'duration' => $duration,
+            'duration' => $data['duration'], // 🔹 dari frontend
         ]);
 
-        return redirect()->route('module.show', $module->slug)->with('success', 'Video berhasil ditambahkan.');
+        return redirect()->route('module.show', $module->slug)->with('success', 'Video berhasil diunggah.');
+    }
+
+    public function update(Request $request, $slug, $id)
+    {
+        $module = Module::where('slug', $slug)->firstOrFail();
+        $video = ModuleVideo::where('module_id', $module->id)->findOrFail($id);
+
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        // Jika thumbnail baru diupload, simpan dan hapus yang lama
+        if ($request->hasFile('thumbnail')) {
+            // Hapus thumbnail lama
+            if ($video->thumbnail && Storage::disk($this->disk)->exists($video->thumbnail)) {
+                Storage::disk($this->disk)->delete($video->thumbnail);
+            }
+
+            $thumbnail = $request->file('thumbnail');
+            $thumbnailFilename = Str::uuid() . '.' . $thumbnail->getClientOriginalExtension();
+            $thumbnailPath = "modules/videos/thumbnails/{$thumbnailFilename}";
+            Storage::disk($this->disk)->putFileAs('modules/videos/thumbnails', $thumbnail, $thumbnailFilename);
+
+            $video->thumbnail = $thumbnailPath;
+        }
+
+        // Update field lain
+        $video->title = $data['title'];
+        $video->description = $data['description'] ?? null;
+
+        $video->save();
+
+        return redirect()->route('module.show', $module->slug)->with('success', 'Video berhasil diperbarui.');
+    }
+
+    public function destroy($slug, $id)
+    {
+        $module = Module::where('slug', $slug)->firstOrFail();
+        $video = ModuleVideo::where('module_id', $module->id)->findOrFail($id);
+
+        // Hapus thumbnail jika ada
+        if ($video->thumbnail && Storage::disk($this->disk)->exists($video->thumbnail)) {
+            Storage::disk($this->disk)->delete($video->thumbnail);
+        }
+
+        // Hapus file video jika ada
+        if ($video->video_url && Storage::disk($this->disk)->exists($video->video_url)) {
+            Storage::disk($this->disk)->delete($video->video_url);
+        }
+
+        $video->delete();
+
+        return redirect()->back()->with('success', 'Video berhasil dihapus.');
     }
 
     public function reorder(Request $request)
