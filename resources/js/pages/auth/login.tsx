@@ -37,8 +37,11 @@ export default function Login({ status, canResetPassword }: LoginProps) {
     };
 
     const handleLoginWithGoogle = () => {
-        window.location.href = 'http://localhost:8000/auth/google/redirect';
+        window.location.href = route('auth.google.redirect');
     };
+    // const handleLoginWithGoogle = () => {
+    //     window.location.href = 'http://localhost:8000/auth/google/redirect';
+    // };
 
     const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 

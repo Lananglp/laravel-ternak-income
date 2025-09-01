@@ -33,8 +33,11 @@ export default function Register() {
     };
 
     const handleLoginWithGoogle = () => {
-        window.location.href = 'http://localhost:8000/auth/google/redirect';
+        window.location.href = route('auth.google.redirect');
     };
+    // const handleLoginWithGoogle = () => {
+    //     window.location.href = 'http://localhost:8000/auth/google/redirect';
+    // };
 
     return (
         <AuthLayout title="Buat akun" description="Silahkan isi form dibawah ini untuk membuat akun">
